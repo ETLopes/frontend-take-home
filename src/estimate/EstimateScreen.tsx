@@ -103,8 +103,14 @@ export default function EstimateScreen() {
 							data={editMode.data}
 							onSave={
 								editMode.type === "item"
-									? handleSaveItem
-									: handleSaveSection
+									? (updates) => {
+										handleSaveItem(updates)
+										bottomSheetRef.current?.close()
+									}
+									: (updates) => {
+										handleSaveSection(updates)
+										bottomSheetRef.current?.close()
+									}
 							}
 							onClose={handleCloseBottomSheet}
 						/>
