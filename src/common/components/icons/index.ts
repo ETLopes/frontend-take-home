@@ -1,0 +1,6 @@
+export * from './ArrowBack'
+export * from './ArrowDown'
+export * from './Close'
+export * from './Delete'
+export * from './Info'
+export * from './Plus' 
