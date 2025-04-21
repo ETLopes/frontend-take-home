@@ -3,36 +3,52 @@ import type { Estimate, EstimateRow, EstimateSection } from "@/data"
 import { PropsWithChildren, useState } from "react"
 import { sampleEstimate } from "@/data"
 
-export type EditMode =
+export type FormModeMethod = "edit" | "add"
+
+export type FormMode =
 	| {
-			type: "item"
-			data: EstimateRow
-	  }
+		type: "item"
+		method: FormModeMethod
+		data: EstimateRow
+	}
 	| {
-			type: "section"
-			data: EstimateSection
-	  }
+		type: "section"
+		method: FormModeMethod
+		data: EstimateSection
+	}
 	| null
 
 interface EstimateContextValue {
 	estimate: Estimate
-	editMode: EditMode
+	editMode: FormMode
 	updateTitle: (title: string) => void
 	updateSection: (
 		sectionId: string,
 		updates: Partial<EstimateSection>
 	) => void
+	addSection: (section: EstimateSection) => void
+	addItem: (sectionId: string, item: EstimateRow) => void
 	updateItem: (rowId: string, updates: Partial<EstimateRow>) => void
-	selectItem: (item: EstimateRow) => void
-	selectSection: (section: EstimateSection) => void
+	selectItem: (item: EstimateRow, method: FormModeMethod) => void
+	selectSection: (section: EstimateSection, method: FormModeMethod) => void
 	clearSelection: () => void
+	handleSaveItem: (
+		updatedItem: EstimateRow
+	) => void
+	handleSaveSection: (
+		updates: Partial<EstimateSection>
+	) => void
+	handleAddItem: (
+		sectionId: string,
+		item: EstimateRow
+	) => void
 }
 
 export const EstimateContext = createContext<EstimateContextValue | null>(null)
 
 export function EstimateProvider({ children }: PropsWithChildren) {
 	const [estimate, setEstimate] = useState<Estimate>(sampleEstimate)
-	const [editMode, setEditMode] = useState<EditMode>(null)
+	const [formMode, setFormMode] = useState<FormMode>(null)
 
 	const updateTitle = (title: string) => {
 		setEstimate((prev) => ({
@@ -55,7 +71,7 @@ export function EstimateProvider({ children }: PropsWithChildren) {
 					: section
 			),
 		}))
-		setEditMode(null)
+		setFormMode(null)
 	}
 
 	const updateItem = (rowId: string, updateItem: Partial<EstimateRow>) => {
@@ -69,41 +85,106 @@ export function EstimateProvider({ children }: PropsWithChildren) {
 				),
 			})),
 		}))
-		setEditMode(null)
+		setFormMode(null)
 	}
 
-	const selectItem = (item: EstimateRow) => {
-		setEditMode({ type: "item", data: item })
+	const addItem = (sectionId: string, item: EstimateRow) => {
+		setEstimate((prev) => ({
+			...prev,
+			updatedAt: new Date(),
+			sections: prev.sections.map((section) =>
+				section.id === sectionId
+					? { ...section, rows: [...section.rows, item] }
+					: section
+			),
+		}))
+		setFormMode(null)
 	}
 
-	const selectSection = (section: EstimateSection) => {
-		setEditMode({ type: "section", data: section })
+	const selectItem = (item: EstimateRow, method: FormModeMethod) => {
+		setFormMode({ type: "item", data: item, method: method })
+	}
+
+	const selectSection = (section: EstimateSection, method: FormModeMethod) => {
+		setFormMode({ type: "section", data: section, method: method })
 	}
 
 	const clearSelection = () => {
-		setEditMode(null)
+		setFormMode(null)
+	}
+
+	const handleSaveItem = (updatedItem: EstimateRow) => {
+		if (formMode?.type !== "item") {
+			return
+		}
+
+		updateItem(updatedItem.id, updatedItem)
+	}
+
+	const addSection = (section: EstimateSection) => {
+		setEstimate((prev) => ({
+			...prev,
+			updatedAt: new Date(),
+			sections: [...prev.sections, section],
+		}))
+		setFormMode(null)
+	}
+
+	const handleSaveSection = (updates: Partial<EstimateSection>) => {
+		if (formMode?.type !== "section") {
+			return
+		}
+
+		if (formMode.method === "add") {
+			addSection({
+				id: `new-section-${Date.now()}`,
+				title: updates.title || "",
+				rows: [],
+			})
+		} else {
+			updateSection(formMode.data.id, updates)
+		}
+	}
+
+	const handleAddItem = (sectionId: string, item: EstimateRow) => {
+		if (formMode?.type !== "item") {
+			return
+		}
+
+		addItem(sectionId, item)
 	}
 
 	const value = useMemo(
 		() => ({
 			estimate,
-			editMode,
+			editMode: formMode,
 			updateTitle,
 			updateSection,
 			updateItem,
 			selectItem,
 			selectSection,
 			clearSelection,
+			addItem,
+			addSection,
+			handleSaveItem,
+			handleSaveSection,
+			handleAddItem,
 		}),
 		[
 			estimate,
-			editMode,
+			formMode,
 			updateTitle,
 			updateSection,
 			updateItem,
 			selectItem,
 			selectSection,
 			clearSelection,
+			addItem,
+			addSection,
+			handleSaveItem,
+			handleAddItem,
+			handleSaveSection,
+			handleAddItem,
 		]
 	)
 
