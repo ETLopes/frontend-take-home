@@ -9,6 +9,7 @@ import { SaveButton } from "../common/components/SaveButton"
 import { UnitOfMeasurePicker } from "./UnitOfMeasurePicker"
 import { ArrowDownIcon } from "../common/components/icons/ArrowDown"
 import { FloatingLabelInput } from "../common/components/FloatingLabelInput"
+import { NumberStepperInput } from "../common/components/NumberStepperInput"
 
 type EditFormProps = {
 	mode: "item" | "section"
@@ -104,12 +105,21 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 								</View>
 							</View>
 
-							<FloatingLabelInput
+							<NumberStepperInput
 								label="Quantity"
 								value={quantity}
 								onChangeText={setQuantity}
-								keyboardType="decimal-pad"
-								placeholder="Enter quantity"
+								onIncrement={() => {
+									const currentValue = parseFloat(quantity) || 0;
+									setQuantity((currentValue + 1).toString());
+								}}
+								onDecrement={() => {
+									const currentValue = parseFloat(quantity) || 0;
+									if (currentValue > 0) {
+										setQuantity((currentValue - 1).toString());
+									}
+								}}
+								placeholder="0"
 							/>
 						</>
 					)}
@@ -165,6 +175,6 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 	formActions: {
-		marginTop: 24,
+		marginTop: 32,
 	},
 })

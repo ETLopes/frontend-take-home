@@ -8,6 +8,7 @@ import { useTheme } from "../common/theme/ThemeContext"
 import { FloatingLabelInput } from "../common/components/FloatingLabelInput"
 import { SaveButton } from "../common/components/SaveButton"
 import { ArrowDownIcon } from "../common/components/icons/ArrowDown"
+import { NumberStepperInput } from "../common/components/NumberStepperInput"
 
 interface AddFormProps {
 	onClose: () => void
@@ -21,6 +22,7 @@ export function AddForm({ onClose, onAdd, mode }: AddFormProps) {
 	const [price, setPrice] = useState("")
 	const [unit, setUnit] = useState<UnitOfMeasure>("EA")
 	const [showUnitPicker, setShowUnitPicker] = useState(false)
+	const [quantity, setQuantity] = useState("1")
 
 	const handleAdd = () => {
 		if (name && price) {
@@ -70,6 +72,15 @@ export function AddForm({ onClose, onAdd, mode }: AddFormProps) {
 							<ArrowDownIcon color={colors.icon.primary} />
 						</View>
 					</View>
+
+					<NumberStepperInput
+						label="Quantity"
+						value={quantity}
+						onChangeText={setQuantity}
+						onIncrement={() => setQuantity((parseFloat(quantity) || 0 + 1).toString())}
+						onDecrement={() => setQuantity((parseFloat(quantity) || 0 - 1).toString())}
+						placeholder="Enter quantity"
+					/>
 				</View>
 			)}
 
@@ -133,6 +144,6 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 	formActions: {
-		marginTop: 24,
+		marginTop: 32,
 	},
 })
