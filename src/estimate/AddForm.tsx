@@ -1,101 +1,85 @@
-import React from "react"
-import { View, StyleSheet } from "react-native"
+import React, { useState } from "react"
+import { View, StyleSheet, TouchableOpacity } from "react-native"
 import { Text } from "../common/components/Text"
-import { Button } from "../common/components/Button"
-import { EstimateRow, EstimateSection, UnitOfMeasure } from "@/data"
-import { useState } from "react"
-import { TextField } from "../common/components/TextField"
+import { CloseIcon } from "../common/components/icons/Close"
+import { UnitOfMeasurePicker } from "./UnitOfMeasurePicker"
+import { UOM_LABELS, UnitOfMeasure } from "@/data"
+import { useTheme } from "../common/theme/ThemeContext"
+import { FloatingLabelInput } from "../common/components/FloatingLabelInput"
+import { SaveButton } from "../common/components/SaveButton"
 
-type EditFormProps = {
-	mode: "item" | "section"
-	data: EstimateRow | EstimateSection
-	onSave: (updates: any) => void
+interface AddFormProps {
 	onClose: () => void
+	onAdd: (item: { name: string; price: string; unit: string }) => void
+	mode: "item" | "section"
 }
 
-function isEstimateRow(data: any): data is EstimateRow {
-	return "price" in data && "quantity" in data && "uom" in data
-}
+export function AddForm({ onClose, onAdd, mode }: AddFormProps) {
+	const { colors } = useTheme()
+	const [name, setName] = useState("")
+	const [price, setPrice] = useState("")
+	const [unit, setUnit] = useState<UnitOfMeasure>("EA")
+	const [showUnitPicker, setShowUnitPicker] = useState(false)
 
-export function AddForm({ mode, data, onSave, onClose }: EditFormProps) {
-	const [title, setTitle] = useState(data.title)
-	const [price, setPrice] = useState(
-		isEstimateRow(data) ? data.price.toString() : ""
-	)
-	const [quantity, setQuantity] = useState(
-		isEstimateRow(data) ? data.quantity.toString() : ""
-	)
-	const [uom, setUom] = useState<UnitOfMeasure>(
-		isEstimateRow(data) ? data.uom : "EA"
-	)
-
-	const handleSave = () => {
-		if (mode === "item") {
-			onSave({
-				id: `new-${Date.now()}`,
-				title,
-				price: parseFloat(price),
-				quantity: parseFloat(quantity),
-				uom,
-			})
-		} else {
-			onSave({ title })
+	const handleAdd = () => {
+		if (name && price) {
+			onAdd({ name, price, unit })
+			onClose()
 		}
 	}
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.header}>
-				Add {mode === "item" ? "Item" : "Section"}
-			</Text>
-
-			<View style={styles.field}>
-				<Text>Title</Text>
-				<TextField
-					style={styles.input}
-					value={title}
-					onChangeText={setTitle}
-					placeholder={`Enter ${mode} title`}
-				/>
+		<View style={[styles.container, { backgroundColor: colors.layer.solid.light }]}>
+			<View style={styles.header}>
+				<Text style={styles.title}>Add {mode === "item" ? "Item" : "Group"}</Text>
+				<TouchableOpacity onPress={onClose}>
+					<CloseIcon />
+				</TouchableOpacity>
 			</View>
 
+			<FloatingLabelInput
+				label="Name"
+				value={name}
+				onChangeText={setName}
+				placeholder="Enter item name"
+			/>
+
 			{mode === "item" && (
-				<>
-					<View style={styles.field}>
-						<Text>Price</Text>
-						<TextField
-							style={styles.input}
-							value={price}
-							onChangeText={setPrice}
-							keyboardType="decimal-pad"
-							placeholder="Enter price"
-						/>
-					</View>
-					<View style={styles.field}>
-						<Text>Quantity</Text>
-						<TextField
-							style={styles.input}
-							value={quantity}
-							onChangeText={setQuantity}
-							keyboardType="decimal-pad"
-							placeholder="Enter quantity"
-						/>
-					</View>
-				</>
+				<View style={styles.inputsRow}>
+					<FloatingLabelInput
+						label="Price"
+						value={price}
+						onChangeText={setPrice}
+						placeholder="0.00"
+						keyboardType="numeric"
+						containerStyle={styles.priceInput}
+					/>
+
+					<TouchableOpacity
+						style={[styles.uomButton, { borderColor: colors.outline.medium }]}
+						onPress={() => setShowUnitPicker(true)}
+					>
+						<Text>{unit}</Text>
+					</TouchableOpacity>
+				</View>
 			)}
 
 			<View style={styles.formActions}>
-				<Button onPress={handleSave} style={styles.button}>
-					Save
-				</Button>
-				<Button
-					variant="secondary"
-					onPress={onClose}
-					style={styles.button}
-				>
-					Cancel
-				</Button>
+				<SaveButton
+					onPress={handleAdd}
+					text={`Save ${mode === "item" ? "Item" : "Group"}`}
+				/>
 			</View>
+
+			{showUnitPicker && (
+				<UnitOfMeasurePicker
+					onSelect={(selectedUnit: UnitOfMeasure) => {
+						setUnit(selectedUnit)
+						setShowUnitPicker(false)
+					}}
+					onClose={() => setShowUnitPicker(false)}
+				/>
+			)}
 		</View>
 	)
 }
@@ -103,27 +87,35 @@ export function AddForm({ mode, data, onSave, onClose }: EditFormProps) {
 const styles = StyleSheet.create({
 	container: {
 		padding: 16,
+		borderRadius: 8,
 	},
 	header: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
 		marginBottom: 16,
 	},
-	field: {
-		marginBottom: 16,
+	title: {
+		fontSize: 20,
+		fontWeight: "bold",
 	},
-	input: {
+	inputsRow: {
+		flexDirection: "row",
+		gap: 8,
+	},
+	priceInput: {
+		flex: 1,
+	},
+	uomButton: {
+		height: 48,
+		width: 80,
 		borderWidth: 1,
-		borderColor: "#ccc",
 		borderRadius: 8,
+		justifyContent: "space-between",
+		alignItems: "center",
 		padding: 12,
-		marginTop: 4,
 	},
 	formActions: {
-		flexDirection: "row",
-		justifyContent: "flex-end",
-		gap: 8,
 		marginTop: 24,
-	},
-	button: {
-		minWidth: 100,
 	},
 })

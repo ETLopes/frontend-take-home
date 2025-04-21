@@ -1,10 +1,14 @@
 import React from "react"
 import { View, StyleSheet } from "react-native"
 import { Text } from "../common/components/Text"
-import { Button } from "../common/components/Button"
-import { EstimateRow, EstimateSection, UnitOfMeasure } from "@/data"
+import { EstimateRow, EstimateSection, UnitOfMeasure, UOM_LABELS } from "@/data"
 import { useState } from "react"
-import { TextField } from "../common/components/TextField"
+import { CloseIcon } from "../common/components/icons/Close"
+import { useTheme } from "../common/theme/ThemeContext"
+import { SaveButton } from "../common/components/SaveButton"
+import { UnitOfMeasurePicker } from "./UnitOfMeasurePicker"
+import { ArrowDownIcon } from "../common/components/icons/ArrowDown"
+import { FloatingLabelInput } from "../common/components/FloatingLabelInput"
 
 type EditFormProps = {
 	mode: "item" | "section"
@@ -18,6 +22,7 @@ function isEstimateRow(data: any): data is EstimateRow {
 }
 
 export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
+	const { colors } = useTheme()
 	const [title, setTitle] = useState(data.title)
 	const [price, setPrice] = useState(
 		isEstimateRow(data) ? data.price.toString() : ""
@@ -28,6 +33,7 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 	const [uom, setUom] = useState<UnitOfMeasure>(
 		isEstimateRow(data) ? data.uom : "EA"
 	)
+	const [showUomPicker, setShowUomPicker] = useState(false)
 
 	const handleSave = () => {
 		if (mode === "item") {
@@ -44,58 +50,68 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 	}
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.header}>
-				Edit {mode === "item" ? "Item" : "Section"}
-			</Text>
-
-			<View style={styles.field}>
-				<Text>Title</Text>
-				<TextField
-					style={styles.input}
-					value={title}
-					onChangeText={setTitle}
-					placeholder={`Enter ${mode} title`}
+		<View style={[styles.container, { backgroundColor: colors.layer.solid.light }]}>
+			{showUomPicker ? (
+				<UnitOfMeasurePicker
+					onSelect={(selectedUom) => {
+						setUom(selectedUom)
+						setShowUomPicker(false)
+					}}
+					onClose={() => setShowUomPicker(false)}
 				/>
-			</View>
-
-			{mode === "item" && (
+			) : (
 				<>
-					<View style={styles.field}>
-						<Text>Price</Text>
-						<TextField
-							style={styles.input}
-							value={price}
-							onChangeText={setPrice}
-							keyboardType="decimal-pad"
-							placeholder="Enter price"
-						/>
+					<View style={styles.headerContainer}>
+						<CloseIcon color={colors.icon.primary} onPress={onClose} />
+						<Text style={[styles.header, { color: colors.text.primary }]}>
+							Edit {mode === "item" ? "Item" : "Group"}
+						</Text>
+						<View style={styles.headerPlaceholder} />
 					</View>
-					<View style={styles.field}>
-						<Text>Quantity</Text>
-						<TextField
-							style={styles.input}
-							value={quantity}
-							onChangeText={setQuantity}
-							keyboardType="decimal-pad"
-							placeholder="Enter quantity"
-						/>
+
+					<FloatingLabelInput
+						label="Title"
+						value={title}
+						onChangeText={setTitle}
+						placeholder={`Enter ${mode} title`}
+					/>
+
+					{mode === "item" && (
+						<>
+							<View style={styles.inputsRow}>
+								<FloatingLabelInput
+									label="Price"
+									value={price}
+									onChangeText={setPrice}
+									keyboardType="decimal-pad"
+									placeholder="Enter price"
+									containerStyle={styles.priceInput}
+								/>
+
+								<View
+									style={[styles.uomButton, { borderColor: colors.outline.medium }]}
+									onTouchEnd={() => setShowUomPicker(true)}
+								>
+									<Text style={{ color: colors.text.primary }}>{uom}</Text>
+									<ArrowDownIcon color={colors.icon.primary} />
+								</View>
+							</View>
+
+							<FloatingLabelInput
+								label="Quantity"
+								value={quantity}
+								onChangeText={setQuantity}
+								keyboardType="decimal-pad"
+								placeholder="Enter quantity"
+							/>
+						</>
+					)}
+
+					<View style={styles.formActions}>
+						<SaveButton onPress={handleSave} text="Save Changes" />
 					</View>
 				</>
 			)}
-
-			<View style={styles.formActions}>
-				<Button onPress={handleSave} style={styles.button}>
-					Save
-				</Button>
-				<Button
-					variant="secondary"
-					onPress={onClose}
-					style={styles.button}
-				>
-					Cancel
-				</Button>
-			</View>
 		</View>
 	)
 }
@@ -104,26 +120,36 @@ const styles = StyleSheet.create({
 	container: {
 		padding: 16,
 	},
+	headerContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		marginBottom: 16,
+	},
 	header: {
-		marginBottom: 16,
+		flex: 1,
+		textAlign: "center",
 	},
-	field: {
-		marginBottom: 16,
+	headerPlaceholder: {
+		width: 14, // Same width as CloseIcon
 	},
-	input: {
-		borderWidth: 1,
-		borderColor: "#ccc",
-		borderRadius: 8,
+	inputsRow: {
+		flexDirection: "row",
+		gap: 8,
+	},
+	priceInput: {
+		flex: 1,
+	},
+	uomButton: {
+		flex: 1,
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
 		padding: 12,
-		marginTop: 4,
+		borderWidth: 1,
+		borderRadius: 8,
 	},
 	formActions: {
-		flexDirection: "row",
-		justifyContent: "flex-end",
-		gap: 8,
 		marginTop: 24,
-	},
-	button: {
-		minWidth: 100,
 	},
 })
