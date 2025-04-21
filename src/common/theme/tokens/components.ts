@@ -29,7 +29,7 @@ type SolidBadgeColors = Pick<
 	"positive" | "negative" | "attention" | "neutral"
 >
 
-interface ColorMode {
+export interface ColorMode {
 	button: {
 		background: {
 			primary: ButtonBackground
@@ -56,7 +56,7 @@ interface ColorMode {
 	}
 }
 
-type ColorsComponentTokens = Record<ThemeScheme, ColorMode>
+export type ColorsComponentTokens = Record<ThemeScheme, ColorMode>
 
 const light = {
 	button: {
