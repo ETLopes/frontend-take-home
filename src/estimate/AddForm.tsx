@@ -7,6 +7,7 @@ import { UOM_LABELS, UnitOfMeasure } from "@/data"
 import { useTheme } from "../common/theme/ThemeContext"
 import { FloatingLabelInput } from "../common/components/FloatingLabelInput"
 import { SaveButton } from "../common/components/SaveButton"
+import { ArrowDownIcon } from "../common/components/icons/ArrowDown"
 
 interface AddFormProps {
 	onClose: () => void
@@ -55,12 +56,20 @@ export function AddForm({ onClose, onAdd, mode }: AddFormProps) {
 						containerStyle={styles.priceInput}
 					/>
 
-					<TouchableOpacity
-						style={[styles.uomButton, { borderColor: colors.outline.medium }]}
-						onPress={() => setShowUnitPicker(true)}
-					>
-						<Text>{unit}</Text>
-					</TouchableOpacity>
+					<View style={styles.uomContainer}>
+						<FloatingLabelInput
+							label="Unit"
+							value={UOM_LABELS[unit]}
+							onChangeText={() => { }}
+							placeholder="Select unit"
+							containerStyle={styles.uomInput}
+							onFocus={() => setShowUnitPicker(true)}
+							editable={false}
+						/>
+						<View style={styles.arrowContainer} onTouchEnd={() => setShowUnitPicker(true)}>
+							<ArrowDownIcon color={colors.icon.primary} />
+						</View>
+					</View>
 				</View>
 			)}
 
@@ -102,18 +111,26 @@ const styles = StyleSheet.create({
 	inputsRow: {
 		flexDirection: "row",
 		gap: 8,
+		alignItems: "stretch",
+		marginBottom: 16,
 	},
 	priceInput: {
 		flex: 1,
 	},
-	uomButton: {
-		height: 48,
-		width: 80,
-		borderWidth: 1,
-		borderRadius: 8,
-		justifyContent: "space-between",
+	uomContainer: {
+		flex: 1,
+		flexDirection: "row",
 		alignItems: "center",
-		padding: 12,
+	},
+	uomInput: {
+		flex: 1,
+	},
+	arrowContainer: {
+		position: "absolute",
+		right: 12,
+		top: 0,
+		bottom: 0,
+		justifyContent: "center",
 	},
 	formActions: {
 		marginTop: 24,

@@ -88,12 +88,19 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 									containerStyle={styles.priceInput}
 								/>
 
-								<View
-									style={[styles.uomButton, { borderColor: colors.outline.medium }]}
-									onTouchEnd={() => setShowUomPicker(true)}
-								>
-									<Text style={{ color: colors.text.primary }}>{uom}</Text>
-									<ArrowDownIcon color={colors.icon.primary} />
+								<View style={styles.uomContainer}>
+									<FloatingLabelInput
+										label="Unit"
+										value={UOM_LABELS[uom]}
+										onChangeText={() => { }}
+										placeholder="Select unit"
+										containerStyle={styles.uomInput}
+										onFocus={() => setShowUomPicker(true)}
+										editable={false}
+									/>
+									<View style={styles.arrowContainer} onTouchEnd={() => setShowUomPicker(true)}>
+										<ArrowDownIcon color={colors.icon.primary} />
+									</View>
 								</View>
 							</View>
 
@@ -136,18 +143,26 @@ const styles = StyleSheet.create({
 	inputsRow: {
 		flexDirection: "row",
 		gap: 8,
+		alignItems: "stretch",
+		marginBottom: 16,
 	},
 	priceInput: {
 		flex: 1,
 	},
-	uomButton: {
+	uomContainer: {
 		flex: 1,
 		flexDirection: "row",
-		justifyContent: "space-between",
 		alignItems: "center",
-		padding: 12,
-		borderWidth: 1,
-		borderRadius: 8,
+	},
+	uomInput: {
+		flex: 1,
+	},
+	arrowContainer: {
+		position: "absolute",
+		right: 12,
+		top: 0,
+		bottom: 0,
+		justifyContent: "center",
 	},
 	formActions: {
 		marginTop: 24,

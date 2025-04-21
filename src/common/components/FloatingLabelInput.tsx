@@ -46,7 +46,7 @@ export function FloatingLabelInput({
           styles.input,
           {
             color: colors.text.primary,
-            borderColor: isFocused ? colors.outline.medium : colors.outline.light,
+            borderColor: colors.outline.medium,
           },
           inputStyle,
         ]}
