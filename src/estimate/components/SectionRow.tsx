@@ -1,5 +1,5 @@
 import { customFonts } from "@/src/common/theme/fonts"
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, Pressable } from "react-native"
 import { Text } from "@/src/common/components/Text"
 import { EstimateRow } from "@/data"
 import type { ColorMode } from "@/src/common/theme/tokens/alias/colors"
@@ -15,25 +15,27 @@ interface Props {
 export const SectionRow = ({ row, handleItemPress, handleDelete, colors }: Props) => {
   return (
     <SwipeableRow onDelete={() => handleDelete(row)}>
-      <View
-        style={[styles.row, {
-          borderBottomColor: colors.outline.medium,
-          backgroundColor: colors.layer.solid.light
-        }]}
-      >
-        <View style={styles.rowLeftContent}>
-          <Text style={[styles.rowTitle, { color: colors.text.primary }]} onPress={() => handleItemPress(row)}>
-            {row.title}
-          </Text>
-          <Text style={[styles.rowPriceDetails, { color: colors.text.secondary }]}>
-            ${row.price.toFixed(2)} × {row.quantity}{" "}
-            {row.uom}
+      <Pressable onPress={() => handleItemPress(row)}>
+        <View
+          style={[styles.row, {
+            borderBottomColor: colors.outline.medium,
+            backgroundColor: colors.layer.solid.light
+          }]}
+        >
+          <View style={styles.rowLeftContent}>
+            <Text style={[styles.rowTitle, { color: colors.text.primary }]}>
+              {row.title}
+            </Text>
+            <Text style={[styles.rowPriceDetails, { color: colors.text.secondary }]}>
+              ${row.price.toFixed(2)} × {row.quantity}{" "}
+              {row.uom}
+            </Text>
+          </View>
+          <Text style={{ color: colors.text.primary }}>
+            ${(row.price * row.quantity).toFixed(2)}
           </Text>
         </View>
-        <Text style={{ color: colors.text.primary }}>
-          ${(row.price * row.quantity).toFixed(2)}
-        </Text>
-      </View>
+      </Pressable>
     </SwipeableRow>
   )
 }
