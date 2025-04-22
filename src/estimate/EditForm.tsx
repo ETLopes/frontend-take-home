@@ -1,5 +1,5 @@
 import React from "react"
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, Linking } from "react-native"
 import { Text } from "../common/components/Text"
 import { EstimateRow, EstimateSection, UnitOfMeasure, UOM_LABELS } from "@/data"
 import { useState } from "react"
@@ -10,6 +10,7 @@ import { UnitOfMeasurePicker } from "./UnitOfMeasurePicker"
 import { ArrowDownIcon } from "../common/components/icons/ArrowDown"
 import { FloatingLabelInput } from "../common/components/FloatingLabelInput"
 import { NumberStepperInput } from "../common/components/NumberStepperInput"
+import { SupplierInfo } from "../common/components/SupplierInfo"
 
 type EditFormProps = {
 	mode: "item" | "section"
@@ -121,9 +122,16 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 								}}
 								placeholder="0"
 							/>
+
+							{isEstimateRow(data) && data.supplier && (
+								<SupplierInfo
+									supplier={data.supplier}
+									productTitle={data.title}
+									onPress={() => data.supplier?.productUrl && Linking.openURL(data.supplier.productUrl)}
+								/>
+							)}
 						</>
 					)}
-
 					<View style={styles.formActions}>
 						<SaveButton onPress={handleSave} text="Save Changes" />
 					</View>

@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from "react-native"
 import { Text } from "../common/components/Text"
 import { CloseIcon } from "../common/components/icons/Close"
 import { UnitOfMeasurePicker } from "./UnitOfMeasurePicker"
-import { UOM_LABELS, UnitOfMeasure } from "@/data"
+import { UOM_LABELS, UnitOfMeasure, EstimateRow, EstimateSection } from "@/data"
 import { useTheme } from "../common/theme/ThemeContext"
 import { FloatingLabelInput } from "../common/components/FloatingLabelInput"
 import { SaveButton } from "../common/components/SaveButton"
@@ -11,12 +11,12 @@ import { ArrowDownIcon } from "../common/components/icons/ArrowDown"
 import { NumberStepperInput } from "../common/components/NumberStepperInput"
 
 interface AddFormProps {
-	onClose: () => void
-	onAdd: (item: { name: string; price: string; unit: string }) => void
 	mode: "item" | "section"
+	onSave: (updates: Partial<EstimateRow> | Partial<EstimateSection>) => void
+	onClose: () => void
 }
 
-export function AddForm({ onClose, onAdd, mode }: AddFormProps) {
+export function AddForm({ mode, onSave, onClose }: AddFormProps) {
 	const { colors } = useTheme()
 	const [name, setName] = useState("")
 	const [price, setPrice] = useState("")
@@ -26,7 +26,16 @@ export function AddForm({ onClose, onAdd, mode }: AddFormProps) {
 
 	const handleAdd = () => {
 		if (name && price) {
-			onAdd({ name, price, unit })
+			if (mode === "item") {
+				onSave({
+					title: name,
+					price: parseFloat(price),
+					quantity: parseFloat(quantity),
+					uom: unit,
+				})
+			} else {
+				onSave({ title: name })
+			}
 			onClose()
 		}
 	}

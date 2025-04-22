@@ -105,11 +105,11 @@ export default function EstimateScreen() {
 								data={editMode.data}
 								onSave={
 									editMode.type === "item"
-										? (updates) => {
+										? (updates: EstimateRow) => {
 											handleSaveItem(updates)
 											bottomSheetRef.current?.close()
 										}
-										: (updates) => {
+										: (updates: EstimateSection) => {
 											handleSaveSection(updates)
 											bottomSheetRef.current?.close()
 										}
@@ -118,15 +118,14 @@ export default function EstimateScreen() {
 							/>) :
 							<AddForm
 								mode={editMode.type}
-								data={editMode.data}
 								onSave={
 									editMode.type === "item"
-										? (updates) => {
-											handleAddItem(editMode.data.id, updates)
+										? (updates: Partial<EstimateRow>) => {
+											handleAddItem(editMode.data.id, updates as EstimateRow)
 											bottomSheetRef.current?.close()
 										}
-										: (updates) => {
-											handleSaveSection(updates)
+										: (updates: Partial<EstimateSection>) => {
+											handleSaveSection({ ...updates, id: editMode.data.id } as EstimateSection)
 											bottomSheetRef.current?.close()
 										}
 								}
