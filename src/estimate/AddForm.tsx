@@ -25,7 +25,7 @@ export function AddForm({ mode, onSave, onClose }: AddFormProps) {
 	const [quantity, setQuantity] = useState("1")
 
 	const handleAdd = () => {
-		if (name && price) {
+		if (name) {
 			if (mode === "item") {
 				onSave({
 					title: name,
@@ -34,7 +34,11 @@ export function AddForm({ mode, onSave, onClose }: AddFormProps) {
 					uom: unit,
 				})
 			} else {
-				onSave({ title: name })
+				onSave({
+					id: `section-${Date.now()}`,
+					title: name,
+					rows: []
+				})
 			}
 			onClose()
 		}
