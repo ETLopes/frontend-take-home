@@ -6,7 +6,7 @@ import {
 	calculateEstimateTotal,
 } from "../common/lib/estimate"
 import { EditForm } from "./EditForm"
-import { useEstimateScreen } from "./useEstimateScreen"
+import { useEstimateContext } from "./context"
 import { TextField } from "../common/components/TextField"
 
 export default function EstimateScreenDesktop() {
@@ -14,12 +14,12 @@ export default function EstimateScreenDesktop() {
 		estimate,
 		updateTitle,
 		editMode,
-		handleStartItemEdit,
-		handleStartSectionEdit,
+		selectItem,
+		selectSection,
 		handleSaveItem,
 		handleSaveSection,
-		handleStopEdit,
-	} = useEstimateScreen()
+		clearSelection,
+	} = useEstimateContext()
 
 	const renderEditForm = () => {
 		if (!editMode) {
@@ -40,7 +40,7 @@ export default function EstimateScreenDesktop() {
 						? handleSaveItem
 						: handleSaveSection
 				}
-				onClose={handleStopEdit}
+				onClose={clearSelection}
 			/>
 		)
 	}
@@ -67,10 +67,10 @@ export default function EstimateScreenDesktop() {
 								style={[
 									styles.sectionHeader,
 									editMode?.type === "section" &&
-										editMode.data.id === section.id &&
-										styles.selectedSection,
+									editMode.data.id === section.id &&
+									styles.selectedSection,
 								]}
-								onPress={() => handleStartSectionEdit(section)}
+								onPress={() => selectSection(section, 'edit')}
 							>
 								<Text>{section.title}</Text>
 								<Text>
@@ -84,10 +84,10 @@ export default function EstimateScreenDesktop() {
 									style={[
 										styles.tableRow,
 										editMode?.type === "item" &&
-											editMode.data.id === row.id &&
-											styles.selectedRow,
+										editMode.data.id === row.id &&
+										styles.selectedRow,
 									]}
-									onPress={() => handleStartItemEdit(row)}
+									onPress={() => selectItem(row, 'edit')}
 								>
 									<View style={styles.rowLeftContent}>
 										<Text style={styles.rowTitle}>

@@ -3,8 +3,8 @@ import { Path, Svg, SvgProps } from "react-native-svg"
 interface PlusIconProps extends Omit<SvgProps, 'fill'> {
   color: string
   backgroundColor?: string
-  width: string
-  height: string
+  width: string | number
+  height: string | number
 
 }
 

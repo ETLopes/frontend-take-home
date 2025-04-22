@@ -31,9 +31,11 @@ export const SectionRow = ({ row, handleItemPress, handleDelete, colors }: Props
               {row.uom}
             </Text>
           </View>
-          <Text style={{ color: colors.text.primary }}>
-            ${(row.price * row.quantity).toFixed(2)}
-          </Text>
+          <View style={styles.rowPriceTotalBox}>
+            <Text style={[styles.rowPriceTotal, { color: colors.text.primary }]}>
+              ${(row.price * row.quantity).toFixed(2)}
+            </Text>
+          </View>
         </View>
       </Pressable>
     </SwipeableRow>
@@ -46,7 +48,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   rowLeftContent: {
     flex: 1,
@@ -59,4 +61,10 @@ const styles = StyleSheet.create({
   rowPriceDetails: {
     ...customFonts.regular.text.sm,
   },
+  rowPriceTotalBox: {
+    justifyContent: "flex-start",
+  },
+  rowPriceTotal: {
+    ...customFonts.regular.text.md,
+  }
 })

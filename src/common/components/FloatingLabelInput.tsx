@@ -13,6 +13,7 @@ interface FloatingLabelInputProps extends Omit<TextInputProps, 'style'> {
   type?: 'text' | 'quantity';
   onIncrement?: () => void;
   onDecrement?: () => void;
+  prefix?: string;
 }
 
 export function FloatingLabelInput({
@@ -24,6 +25,7 @@ export function FloatingLabelInput({
   type = 'text',
   onIncrement,
   onDecrement,
+  prefix,
   ...props
 }: FloatingLabelInputProps) {
   const { colors } = useTheme();
@@ -74,6 +76,11 @@ export function FloatingLabelInput({
             />
           </TouchableOpacity>
         )}
+        {prefix && (
+          <Text style={[styles.prefix, { color: colors.text.primary }]}>
+            {prefix}
+          </Text>
+        )}
         <TextInput
           value={value}
           onChangeText={handleChangeText}
@@ -114,9 +121,9 @@ export function FloatingLabelInput({
 
 const styles = StyleSheet.create({
   container: {
-    height: 60,
+    height: 56,
     justifyContent: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   label: {
     position: 'absolute',
@@ -145,5 +152,9 @@ const styles = StyleSheet.create({
     height: 48,
     alignItems: 'center',
     justifyContent: 'center',
-  }
+  },
+  prefix: {
+    paddingLeft: 12,
+    paddingRight: 4,
+  },
 });

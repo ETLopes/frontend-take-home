@@ -3,6 +3,8 @@ import { LightIcon } from "./icons/Light"
 import { DarkIcon } from "./icons/Dark"
 import { useTheme } from "../theme/ThemeContext"
 import { useEffect, useRef } from "react"
+import { numbersAliasTokens } from "../theme/tokens/alias/numbers"
+import { numbersBaseTokens } from "../theme/tokens/base/numbers"
 
 export const ThemeToggle = () => {
   const { isDarkMode, setTheme, colors } = useTheme()
@@ -36,13 +38,13 @@ export const ThemeToggle = () => {
         onPress={() => setTheme('light')}
         style={styles.themeToggle}
       >
-        <LightIcon color={colors.icon.primary} />
+        <LightIcon color={colors.icon.primary} height={numbersAliasTokens.sizing.icon.md} width={numbersAliasTokens.sizing.icon.md} />
       </Pressable>
       <Pressable
         onPress={() => setTheme('dark')}
         style={styles.themeToggle}
       >
-        <DarkIcon color={colors.icon.primary} />
+        <DarkIcon color={colors.icon.primary} width={numbersBaseTokens.globalScale[5]} height={numbersBaseTokens.globalScale[5]} />
       </Pressable>
     </View>
   )
@@ -52,15 +54,17 @@ const styles = StyleSheet.create({
   themeContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 20,
+    borderRadius: numbersAliasTokens.borderRadius.sm,
     padding: 4,
     gap: 4,
     position: 'relative',
+    width: 88,
   },
   themeToggle: {
     padding: 8,
     borderRadius: 16,
-    width: 40,
+    width: 38,
+    height: 32,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -68,7 +72,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 40,
     height: 32,
-    borderRadius: 16,
+    borderRadius: numbersAliasTokens.borderRadius.sm,
     left: 4,
   },
 }) 

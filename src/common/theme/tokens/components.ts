@@ -1,7 +1,6 @@
 import { ThemeScheme } from "../types"
 import { numbersAliasTokens } from "./alias/numbers"
 import { colorsBaseTokens } from "./base/colors"
-import { numbersBaseTokens } from "./base/numbers"
 
 interface ButtonBackground {
 	idle: string

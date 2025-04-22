@@ -1,5 +1,6 @@
 import { View, StyleSheet, Text } from "react-native"
 import { useTheme } from "../theme/ThemeContext"
+import { customFonts } from "../theme/fonts"
 
 interface StatusBadgeProps {
   status: string
@@ -9,7 +10,7 @@ export function StatusBadge({ status }: StatusBadgeProps) {
   const { colors } = useTheme()
 
   return (
-    <View style={[styles.container, { borderColor: colors.outline.medium }]}>
+    <View style={[styles.container, { borderColor: colors.badges.washedColors.outline.neutral }]}>
       <View style={styles.dotContainer}>
         <View style={[styles.dot, {
           backgroundColor: colors.text.secondary,
@@ -17,7 +18,7 @@ export function StatusBadge({ status }: StatusBadgeProps) {
         }]} />
       </View>
       <View style={styles.textContainer}>
-        <Text style={[styles.text, { color: colors.text.secondary }]}>{status}</Text>
+        <Text style={[styles.text, { color: colors.badges.washedColors.text.hollow }]}>{status}</Text>
       </View>
     </View>
   )
@@ -38,8 +39,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    width: 12,
-    height: 12,
+    width: 6,
+    height: 6,
   },
   dot: {
     width: 6,
@@ -56,11 +57,7 @@ const styles = StyleSheet.create({
     height: 24,
   },
   text: {
-    width: 37,
-    height: 24,
-    fontSize: 15,
-    lineHeight: 24,
-    textAlign: "center",
-    fontWeight: "500",
-  },
+    ...customFonts.regular.text.sm,
+  }
+
 }) 

@@ -63,9 +63,9 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 		onClose()
 	}
 
-	return (
-		<View style={[styles.container, { backgroundColor: colors.layer.solid.light }]}>
-			{showUomPicker ? (
+	if (showUomPicker) {
+		return (
+			<View style={[styles.container, { backgroundColor: colors.layer.solid.light }]}>
 				<UnitOfMeasurePicker
 					onSelect={(selectedUom) => {
 						setUom(selectedUom)
@@ -73,85 +73,87 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 					}}
 					onClose={() => setShowUomPicker(false)}
 				/>
-			) : (
+			</View>
+		)
+	}
+
+	return (
+		<View style={[styles.container, { backgroundColor: colors.layer.solid.light }]}>
+			<View style={styles.headerContainer}>
+				<CloseIcon color={colors.icon.primary} onPress={onClose} />
+				<Text style={[styles.header, { color: colors.text.primary }]}>
+					Edit {mode === "item" ? "Item" : "Group"}
+				</Text>
+				<DeleteIcon
+					color={colors.icon.primary}
+					onPress={handleDelete}
+				/>
+			</View>
+
+			<FloatingLabelInput
+				label="Title"
+				value={title}
+				onChangeText={setTitle}
+				placeholder={`Enter ${mode} title`}
+			/>
+
+			{mode === "item" && (
 				<>
-					<View style={styles.headerContainer}>
-						<CloseIcon color={colors.icon.primary} onPress={onClose} />
-						<Text style={[styles.header, { color: colors.text.primary }]}>
-							Edit {mode === "item" ? "Item" : "Group"}
-						</Text>
-						<DeleteIcon
-							color={colors.icon.primary}
-							onPress={handleDelete}
+					<View style={styles.inputsRow}>
+						<FloatingLabelInput
+							label="Price"
+							value={price}
+							onChangeText={setPrice}
+							keyboardType="decimal-pad"
+							placeholder="Enter price"
+							containerStyle={styles.priceInput}
 						/>
+
+						<View style={styles.uomContainer}>
+							<FloatingLabelInput
+								label="Unit"
+								value={UOM_LABELS[uom]}
+								onChangeText={() => { }}
+								placeholder="Select unit"
+								containerStyle={styles.uomInput}
+								onFocus={() => setShowUomPicker(true)}
+								editable={false}
+							/>
+							<View style={styles.arrowContainer} onTouchEnd={() => setShowUomPicker(true)}>
+								<ArrowDownIcon color={colors.icon.primary} />
+							</View>
+						</View>
 					</View>
 
-					<FloatingLabelInput
-						label="Title"
-						value={title}
-						onChangeText={setTitle}
-						placeholder={`Enter ${mode} title`}
+					<NumberStepperInput
+						label="Quantity"
+						value={quantity}
+						onChangeText={setQuantity}
+						onIncrement={() => {
+							const currentValue = parseFloat(quantity) || 0;
+							setQuantity((currentValue + 1).toString());
+						}}
+						onDecrement={() => {
+							const currentValue = parseFloat(quantity) || 0;
+							if (currentValue > 0) {
+								setQuantity((currentValue - 1).toString());
+							}
+						}}
+						placeholder="0"
 					/>
 
-					{mode === "item" && (
-						<>
-							<View style={styles.inputsRow}>
-								<FloatingLabelInput
-									label="Price"
-									value={price}
-									onChangeText={setPrice}
-									keyboardType="decimal-pad"
-									placeholder="Enter price"
-									containerStyle={styles.priceInput}
-								/>
-
-								<View style={styles.uomContainer}>
-									<FloatingLabelInput
-										label="Unit"
-										value={UOM_LABELS[uom]}
-										onChangeText={() => { }}
-										placeholder="Select unit"
-										containerStyle={styles.uomInput}
-										onFocus={() => setShowUomPicker(true)}
-										editable={false}
-									/>
-									<View style={styles.arrowContainer} onTouchEnd={() => setShowUomPicker(true)}>
-										<ArrowDownIcon color={colors.icon.primary} />
-									</View>
-								</View>
-							</View>
-
-							<NumberStepperInput
-								label="Quantity"
-								value={quantity}
-								onChangeText={setQuantity}
-								onIncrement={() => {
-									const currentValue = parseFloat(quantity) || 0;
-									setQuantity((currentValue + 1).toString());
-								}}
-								onDecrement={() => {
-									const currentValue = parseFloat(quantity) || 0;
-									if (currentValue > 0) {
-										setQuantity((currentValue - 1).toString());
-									}
-								}}
-								placeholder="0"
-							/>
-
-							{isEstimateRow(data) && data.supplier && (
-								<SupplierInfo
-									supplier={data.supplier}
-									productTitle={data.title}
-									onPress={() => data.supplier?.productUrl && Linking.openURL(data.supplier.productUrl)}
-								/>
-							)}
-						</>
+					{isEstimateRow(data) && data.supplier && (
+						<SupplierInfo
+							supplier={data.supplier}
+							productTitle={data.title}
+							onPress={() => data.supplier?.productUrl && Linking.openURL(data.supplier.productUrl)}
+						/>
 					)}
-					<View style={styles.formActions}>
-						<SaveButton onPress={handleSave} text="Save Changes" />
-					</View>
 				</>
 			)}
+			<View style={styles.formActions}>
+				<SaveButton onPress={handleSave} text="Save Changes" />
+			</View>
 		</View>
 	)
 }

@@ -2,6 +2,8 @@ import { View, StyleSheet, Pressable, Text } from "react-native"
 import { useTheme } from "../theme/ThemeContext"
 import { ThemeToggle } from "./ThemeToggle"
 import { PlusIcon } from "./icons/Plus"
+import { numbersAliasTokens } from "../theme/tokens/alias/numbers"
+import { customFonts } from "../theme/fonts"
 
 interface HeaderProps {
   onAddPress: () => void;
@@ -21,10 +23,10 @@ export const Header = ({ onAddPress }: HeaderProps) => {
         >
           <View style={styles.addButtonContent}>
             <PlusIcon
-              width="16"
-              height="16"
+              width={numbersAliasTokens.sizing.icon.lg}
+              height={numbersAliasTokens.sizing.icon.lg}
               color={colors.icon.primary}
-              backgroundColor={colors.layer.solid.dark}
+              backgroundColor={colors.icon.primary}
             />
             <Text style={[styles.addButtonText, { color: colors.text.primary }]}>Add</Text>
           </View>
@@ -45,6 +47,8 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   addButton: {
+    width: 118,
+    height: 48,
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
@@ -52,10 +56,11 @@ const styles = StyleSheet.create({
   addButtonContent: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: numbersAliasTokens.spacing["2xs"],
+    justifyContent: "center",
+    height: "100%",
   },
   addButtonText: {
-    fontSize: 14,
-    fontWeight: "600",
+    ...customFonts.regular.text.md
   },
 }) 

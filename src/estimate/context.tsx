@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo } from "react"
-import type { Estimate, EstimateRow, EstimateSection } from "@/data"
+import type { Estimate, EstimateRow, EstimateSection, UnitOfMeasure } from "@/data"
 import { PropsWithChildren, useState } from "react"
 import { sampleEstimate } from "@/data"
 
@@ -44,6 +44,8 @@ interface EstimateContextValue {
 	) => void
 	deleteSection: (sectionId: string) => void
 	deleteItem: (itemId: string) => void
+	selectedUnit: UnitOfMeasure | null
+	setSelectedUnit: (unit: UnitOfMeasure | null) => void
 }
 
 export const EstimateContext = createContext<EstimateContextValue | null>(null)
@@ -51,6 +53,7 @@ export const EstimateContext = createContext<EstimateContextValue | null>(null)
 export function EstimateProvider({ children }: PropsWithChildren) {
 	const [estimate, setEstimate] = useState<Estimate>(sampleEstimate)
 	const [formMode, setFormMode] = useState<FormMode>(null)
+	const [selectedUnit, setSelectedUnit] = useState<UnitOfMeasure | null>(null)
 
 	const updateTitle = (title: string) => {
 		setEstimate((prev) => ({
@@ -196,6 +199,8 @@ export function EstimateProvider({ children }: PropsWithChildren) {
 			handleAddItem,
 			deleteSection,
 			deleteItem,
+			selectedUnit,
+			setSelectedUnit,
 		}),
 		[
 			estimate,
@@ -214,6 +219,7 @@ export function EstimateProvider({ children }: PropsWithChildren) {
 			handleAddItem,
 			deleteSection,
 			deleteItem,
+			selectedUnit,
 		]
 	)
 
