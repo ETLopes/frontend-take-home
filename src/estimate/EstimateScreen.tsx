@@ -76,8 +76,6 @@ export default function EstimateScreen() {
 		<SafeAreaView style={[styles.container, { backgroundColor: colors.layer.solid.medium }]}>
 			<Header
 				onAddPress={handleAddNewSection}
-				onDelete={handleDelete}
-				showDelete={!!editMode && editMode.method === "edit"}
 			/>
 			<ScrollView>
 				<View style={styles.titleContainer}>
@@ -99,6 +97,10 @@ export default function EstimateScreen() {
 							handleSectionPress(section, method)
 						}
 						handleItemPress={handleItemPress}
+						handleDelete={(item: EstimateRow) => {
+							selectItem(item, "edit")
+							deleteItem(item.id)
+						}}
 					/>
 				))}
 				<View style={[styles.estimateTotal, {

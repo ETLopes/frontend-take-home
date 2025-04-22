@@ -12,9 +12,10 @@ interface SectionProps {
   section: EstimateSection
   handleSectionPress: (section: EstimateSection, method: FormModeMethod) => void
   handleItemPress: (item: EstimateRow) => void
+  handleDelete: (item: EstimateRow) => void
 }
 
-export const Section = ({ section, handleSectionPress, handleItemPress }: SectionProps) => {
+export const Section = ({ section, handleSectionPress, handleItemPress, handleDelete }: SectionProps) => {
   const { colors } = useTheme()
 
   return (
@@ -48,6 +49,7 @@ export const Section = ({ section, handleSectionPress, handleItemPress }: Sectio
           key={row.id}
           row={row}
           handleItemPress={handleItemPress}
+          handleDelete={handleDelete}
           colors={colors}
         />
       ))}

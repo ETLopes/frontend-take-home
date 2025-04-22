@@ -169,10 +169,6 @@ export function EstimateProvider({ children }: PropsWithChildren) {
 	}
 
 	const deleteItem = (itemId: string) => {
-		if (formMode?.type !== "item") {
-			return
-		}
-
 		setEstimate((prev) => ({
 			...prev,
 			updatedAt: new Date(),
