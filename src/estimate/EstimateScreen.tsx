@@ -44,7 +44,6 @@ export default function EstimateScreen() {
 
 	const handleSectionPress = (section: EstimateSection, method: FormModeMethod = "edit") => {
 		if (method === "add") {
-			// When adding, we want to add an item to the section
 			selectItem({ id: section.id, title: "", price: 0, quantity: 1, uom: "EA" }, method)
 		} else {
 			selectSection(section, method)
@@ -88,6 +87,8 @@ export default function EstimateScreen() {
 						value={estimate.title}
 						onChangeText={updateTitle}
 						placeholder="Estimate Title"
+						multiline
+						numberOfLines={2}
 					/>
 				</View>
 				{estimate.sections.map((section) => (
@@ -163,9 +164,11 @@ const styles = StyleSheet.create({
 	},
 	titleContainer: {
 		padding: 16,
+		gap: 8,
 	},
 	title: {
 		...customFonts.bold.headline.sm,
+		flexWrap: 'wrap',
 	},
 	estimateTotal: {
 		flexDirection: "row",
