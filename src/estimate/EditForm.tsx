@@ -1,5 +1,5 @@
 import React from "react"
-import { View, StyleSheet, Linking } from "react-native"
+import { View, StyleSheet, Linking, Pressable } from "react-native"
 import { Text } from "../common/components/Text"
 import { EstimateRow, EstimateSection, UnitOfMeasure, UOM_LABELS } from "@/data"
 import { useState } from "react"
@@ -30,7 +30,7 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 	const { deleteItem, deleteSection } = useEstimateContext()
 	const [title, setTitle] = useState(data.title)
 	const [price, setPrice] = useState(
-		isEstimateRow(data) ? data.price.toString() : ""
+		isEstimateRow(data) ? `$  ${data.price.toString()}` : "$  "
 	)
 	const [quantity, setQuantity] = useState(
 		isEstimateRow(data) ? data.quantity.toString() : ""
@@ -45,7 +45,7 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 			onSave({
 				...data,
 				title,
-				price: parseFloat(price),
+				price: parseFloat(price.replace('$', '')),
 				quantity: parseFloat(quantity),
 				uom,
 			})
@@ -103,26 +103,40 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 						<FloatingLabelInput
 							label="Price"
 							value={price}
-							onChangeText={setPrice}
-							keyboardType="decimal-pad"
-							placeholder="Enter price"
+							onChangeText={(text) => {
+								// Remove any non-numeric characters except dollar sign, spaces, and decimal point
+								let cleanText = text.replace(/[^\d.]/g, '');
+								// Split the number into integer and decimal parts
+								const parts = cleanText.split('.');
+								// If there's a decimal part, limit it to 2 digits
+								if (parts.length > 1) {
+									parts[1] = parts[1].slice(0, 2);
+									cleanText = parts.join('.');
+								}
+								// Add dollar sign and two spaces at the beginning
+								setPrice('$  ' + cleanText);
+							}}
+							placeholder="$  0.00"
+							keyboardType="numeric"
 							containerStyle={styles.priceInput}
 						/>
 
-						<View style={styles.uomContainer}>
+						<Pressable
+							style={styles.uomContainer}
+							onPress={() => setShowUomPicker(true)}
+						>
 							<FloatingLabelInput
 								label="Unit"
 								value={UOM_LABELS[uom]}
 								onChangeText={() => { }}
 								placeholder="Select unit"
 								containerStyle={styles.uomInput}
-								onFocus={() => setShowUomPicker(true)}
 								editable={false}
 							/>
-							<View style={styles.arrowContainer} onTouchEnd={() => setShowUomPicker(true)}>
+							<View style={styles.arrowContainer}>
 								<ArrowDownIcon color={colors.icon.primary} />
 							</View>
-						</View>
+						</Pressable>
 					</View>
 
 					<NumberStepperInput
@@ -188,6 +202,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: "row",
 		alignItems: "center",
+		position: "relative",
 	},
 	uomInput: {
 		flex: 1,
@@ -198,6 +213,8 @@ const styles = StyleSheet.create({
 		top: 0,
 		bottom: 0,
 		justifyContent: "center",
+		alignItems: "center",
+		width: 24,
 	},
 	formActions: {
 		marginTop: 32,

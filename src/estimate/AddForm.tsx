@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, StyleSheet, TouchableOpacity } from "react-native"
+import { View, StyleSheet, TouchableOpacity, Pressable } from "react-native"
 import { Text } from "../common/components/Text"
 import { CloseIcon } from "../common/components/icons/Close"
 import { UnitOfMeasurePicker } from "./UnitOfMeasurePicker"
@@ -97,8 +97,15 @@ export function AddForm({ mode, onSave, onClose }: AddFormProps) {
 							label="Price"
 							value={price}
 							onChangeText={(text) => {
-								// Remove any non-numeric characters except dollar sign and spaces
-								const cleanText = text.replace(/[^\d]/g, '');
+								// Remove any non-numeric characters except dollar sign, spaces, and decimal point
+								let cleanText = text.replace(/[^\d.]/g, '');
+								// Split the number into integer and decimal parts
+								const parts = cleanText.split('.');
+								// If there's a decimal part, limit it to 2 digits
+								if (parts.length > 1) {
+									parts[1] = parts[1].slice(0, 2);
+									cleanText = parts.join('.');
+								}
 								// Add dollar sign and two spaces at the beginning
 								setPrice('$  ' + cleanText);
 							}}
@@ -107,32 +114,30 @@ export function AddForm({ mode, onSave, onClose }: AddFormProps) {
 							containerStyle={styles.priceInput}
 						/>
 
-						<View style={styles.uomContainer}>
-							<TouchableOpacity
-								style={styles.uomInput}
-								onPress={() => setShowUnitPicker(true)}
-							>
-								<FloatingLabelInput
-									label="Unit"
-									value={UOM_LABELS[unit]}
-									onChangeText={() => { }}
-									placeholder="Select unit"
-									containerStyle={styles.uomInput}
-									editable={false}
-								/>
-							</TouchableOpacity>
-							<View style={styles.arrowContainer} onTouchEnd={() => setShowUnitPicker(true)}>
+						<Pressable
+							style={styles.uomContainer}
+							onPress={() => setShowUnitPicker(true)}
+						>
+							<FloatingLabelInput
+								label="Unit"
+								value={UOM_LABELS[unit]}
+								onChangeText={() => { }}
+								placeholder="Select unit"
+								containerStyle={styles.uomInput}
+								editable={false}
+							/>
+							<View style={styles.arrowContainer}>
 								<ArrowDownIcon color={colors.icon.primary} />
 							</View>
-						</View>
+						</Pressable>
 					</View>
 
 					<NumberStepperInput
 						label="Quantity"
 						value={quantity}
 						onChangeText={setQuantity}
-						onIncrement={() => setQuantity((parseFloat(quantity) || 0 + 1).toString())}
-						onDecrement={() => setQuantity((parseFloat(quantity) || 0 - 1).toString())}
+						onIncrement={() => setQuantity(((parseFloat(quantity) || 0) + 1).toString())}
+						onDecrement={() => setQuantity(((parseFloat(quantity) || 0) - 1).toString())}
 						placeholder="Enter quantity"
 					/>
 				</>
@@ -190,6 +195,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: "row",
 		alignItems: "center",
+		position: "relative",
 	},
 	uomInput: {
 		flex: 1,
@@ -200,6 +206,8 @@ const styles = StyleSheet.create({
 		top: 0,
 		bottom: 0,
 		justifyContent: "center",
+		alignItems: "center",
+		width: 24,
 	},
 	formActions: {
 		marginTop: 32,

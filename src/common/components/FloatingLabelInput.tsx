@@ -91,6 +91,7 @@ export function FloatingLabelInput({
               borderWidth: type === 'quantity' ? 0 : 1,
               borderColor: type === 'quantity' ? 'transparent' : colors.outline.medium,
               borderRadius: type === 'quantity' ? 0 : 8,
+              textAlign: type === 'quantity' ? 'center' : 'left',
             },
             inputStyle,
           ]}
