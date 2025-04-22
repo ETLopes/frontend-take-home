@@ -42,6 +42,8 @@ interface EstimateContextValue {
 		sectionId: string,
 		item: EstimateRow
 	) => void
+	deleteSection: (sectionId: string) => void
+	deleteItem: (itemId: string) => void
 }
 
 export const EstimateContext = createContext<EstimateContextValue | null>(null)
@@ -154,6 +156,33 @@ export function EstimateProvider({ children }: PropsWithChildren) {
 		addItem(sectionId, item)
 	}
 
+	const deleteSection = (sectionId: string) => {
+		if (formMode?.type !== "section") {
+			return
+		}
+
+		setEstimate((prev) => ({
+			...prev,
+			updatedAt: new Date(),
+			sections: prev.sections.filter((section) => section.id !== sectionId),
+		}))
+	}
+
+	const deleteItem = (itemId: string) => {
+		if (formMode?.type !== "item") {
+			return
+		}
+
+		setEstimate((prev) => ({
+			...prev,
+			updatedAt: new Date(),
+			sections: prev.sections.map((section) => ({
+				...section,
+				rows: section.rows.filter((row) => row.id !== itemId),
+			})),
+		}))
+	}
+
 	const value = useMemo(
 		() => ({
 			estimate,
@@ -169,6 +198,8 @@ export function EstimateProvider({ children }: PropsWithChildren) {
 			handleSaveItem,
 			handleSaveSection,
 			handleAddItem,
+			deleteSection,
+			deleteItem,
 		}),
 		[
 			estimate,
@@ -185,6 +216,8 @@ export function EstimateProvider({ children }: PropsWithChildren) {
 			handleAddItem,
 			handleSaveSection,
 			handleAddItem,
+			deleteSection,
+			deleteItem,
 		]
 	)
 

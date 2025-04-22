@@ -11,6 +11,8 @@ import { ArrowDownIcon } from "../common/components/icons/ArrowDown"
 import { FloatingLabelInput } from "../common/components/FloatingLabelInput"
 import { NumberStepperInput } from "../common/components/NumberStepperInput"
 import { SupplierInfo } from "../common/components/SupplierInfo"
+import { DeleteIcon } from "../common/components/icons/Delete"
+import { useEstimateContext } from "./context"
 
 type EditFormProps = {
 	mode: "item" | "section"
@@ -25,6 +27,7 @@ function isEstimateRow(data: any): data is EstimateRow {
 
 export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 	const { colors } = useTheme()
+	const { deleteItem, deleteSection } = useEstimateContext()
 	const [title, setTitle] = useState(data.title)
 	const [price, setPrice] = useState(
 		isEstimateRow(data) ? data.price.toString() : ""
@@ -51,6 +54,15 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 		}
 	}
 
+	const handleDelete = () => {
+		if (mode === "item") {
+			deleteItem(data.id)
+		} else {
+			deleteSection(data.id)
+		}
+		onClose()
+	}
+
 	return (
 		<View style={[styles.container, { backgroundColor: colors.layer.solid.light }]}>
 			{showUomPicker ? (
@@ -68,7 +80,10 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 						<Text style={[styles.header, { color: colors.text.primary }]}>
 							Edit {mode === "item" ? "Item" : "Group"}
 						</Text>
-						<View style={styles.headerPlaceholder} />
+						<DeleteIcon
+							color={colors.icon.primary}
+							onPress={handleDelete}
+						/>
 					</View>
 
 					<FloatingLabelInput

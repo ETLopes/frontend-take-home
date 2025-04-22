@@ -32,6 +32,8 @@ export default function EstimateScreen() {
 		handleAddItem,
 		handleSaveSection,
 		clearSelection,
+		deleteSection,
+		deleteItem,
 	} = useEstimateContext()
 
 	const handleAddNewSection = () => {
@@ -59,9 +61,24 @@ export default function EstimateScreen() {
 		clearSelection()
 	}
 
+	const handleDelete = () => {
+		if (!editMode) return
+
+		if (editMode.type === "section") {
+			deleteSection(editMode.data.id)
+		} else {
+			deleteItem(editMode.data.id)
+		}
+		handleCloseBottomSheet()
+	}
+
 	return (
 		<SafeAreaView style={[styles.container, { backgroundColor: colors.layer.solid.medium }]}>
-			<Header onAddPress={handleAddNewSection} />
+			<Header
+				onAddPress={handleAddNewSection}
+				onDelete={handleDelete}
+				showDelete={!!editMode && editMode.method === "edit"}
+			/>
 			<ScrollView>
 				<View style={styles.titleContainer}>
 					<TextField
