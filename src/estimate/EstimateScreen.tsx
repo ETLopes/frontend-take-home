@@ -16,6 +16,7 @@ import { Header } from "../common/components/Header"
 import { useTheme } from "../common/theme/ThemeContext"
 import { TextField } from "../common/components/TextField"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { StatusBadge } from "../common/components/StatusBadge"
 
 
 export default function EstimateScreen() {
@@ -81,6 +82,7 @@ export default function EstimateScreen() {
 			/>
 			<ScrollView>
 				<View style={styles.titleContainer}>
+					<StatusBadge status="Draft" />
 					<TextField
 						style={[styles.title, { color: colors.text.primary }]}
 						value={estimate.title}
