@@ -16,6 +16,7 @@ import { FormModeMethod } from "./context"
 import { AddForm } from "./AddForm"
 import { useState } from "react"
 import { numbersAliasTokens } from "../common/theme/tokens/alias/numbers"
+import { Platform } from "react-native"
 
 export default function EstimateScreenDesktop() {
 	const {
@@ -135,7 +136,11 @@ export default function EstimateScreenDesktop() {
 			{/* Main content */}
 			<View style={styles.content}>
 				{/* Left side - Table */}
-				<View style={styles.tableContainer}>
+				<View style={[styles.tableContainer, {
+					backgroundColor: colors.layer.solid.medium,
+					borderWidth: Platform.OS === "web" ? 1 : 0,
+					borderColor: colors.outline.medium,
+				}]}>
 					<ScrollView style={styles.scrollView}>
 						<View style={styles.tableContent}>
 							{estimate.sections.map((section) => (
@@ -205,19 +210,24 @@ export default function EstimateScreenDesktop() {
 									))}
 								</View>
 							))}
-
-							<View style={[styles.estimateTotal, { backgroundColor: colors.layer.solid.medium }]}>
-								<Text style={{ color: colors.text.primary }}>Total:</Text>
-								<Text style={{ color: colors.text.primary }}>
-									${calculateEstimateTotal(estimate).toFixed(2)}
-								</Text>
-							</View>
 						</View>
 					</ScrollView>
+					<View style={[styles.estimateTotal, { backgroundColor: colors.layer.solid.medium, borderTopColor: colors.outline.medium }]}>
+						<Text style={{ color: colors.text.primary }}>Total:</Text>
+						<Text style={{ color: colors.text.primary }}>
+							${calculateEstimateTotal(estimate).toFixed(2)}
+						</Text>
+					</View>
 				</View>
 
 				{/* Right side - Form */}
-				<View style={[styles.formContainer, { backgroundColor: colors.layer.solid.light }]}>
+				<View style={[styles.formContainer, {
+					backgroundColor: colors.layer.solid.light,
+					borderWidth: Platform.OS === "web" ? 1 : 0,
+					borderColor: colors.outline.medium,
+					width: Platform.OS === "web" ? 400 : '100%',
+					padding: Platform.OS === "web" ? 20 : 0,
+				}]}>
 					{renderRightPanel()}
 				</View>
 			</View>
@@ -250,31 +260,33 @@ const styles = StyleSheet.create({
 	content: {
 		flex: 1,
 		flexDirection: "row",
+		padding: Platform.OS === "web" ? 40 : 0,
+		gap: Platform.OS === "web" ? 28 : 0,
+		alignItems: 'flex-start',
 	},
 	tableContainer: {
 		flex: 2,
+		position: 'relative',
+		borderRadius: 8,
+		overflow: 'hidden',
 	},
 	scrollView: {
 		flex: 1,
 	},
 	tableContent: {
-		padding: 16,
+		padding: Platform.OS === "web" ? 0 : 16,
+		paddingBottom: Platform.OS === "web" ? 80 : 16,
 	},
 	formContainer: {
-		flex: 1,
-		borderLeftWidth: 1,
-		borderLeftColor: "#e0e0e0",
-		padding: 16,
+		position: 'relative',
+		borderRadius: 8,
+		overflow: 'hidden',
+		width: Platform.OS === "web" ? 400 : '100%',
 	},
 	section: {
-		borderRadius: 8,
-		marginBottom: 16,
+		borderRadius: 0,
+		marginBottom: Platform.OS === "web" ? 0 : 16,
 		overflow: "hidden",
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 2 },
-		shadowOpacity: 0.1,
-		shadowRadius: 4,
-		elevation: 3,
 	},
 	selectedSection: {
 		backgroundColor: "#e6f0ff",
@@ -287,9 +299,10 @@ const styles = StyleSheet.create({
 	},
 	tableRow: {
 		flexDirection: "row",
-		padding: 12,
+		padding: 16,
 		borderBottomWidth: 1,
 		cursor: "pointer",
+		marginBottom: Platform.OS === "web" ? 0 : 8,
 	},
 	selectedRow: {
 		backgroundColor: "#f0f7ff",
@@ -312,13 +325,11 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		padding: 16,
-		borderRadius: 8,
-		marginTop: 8,
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 2 },
-		shadowOpacity: 0.1,
-		shadowRadius: 4,
-		elevation: 3,
+		position: 'absolute',
+		bottom: 0,
+		left: 0,
+		right: 0,
+		borderTopWidth: 1,
 	},
 	noSelection: {
 		flex: 1,
@@ -342,6 +353,8 @@ const styles = StyleSheet.create({
 		borderRadius: numbersAliasTokens.borderRadius.sm,
 		padding: 4,
 		marginBottom: 16,
+		width: Platform.OS === "web" ? 320 : '100%',
+		alignSelf: 'center',
 	},
 	toggleButton: {
 		flex: 1,
