@@ -3,6 +3,7 @@ import { View, StyleSheet } from "react-native"
 import { Button } from "./Button"
 import { Text } from "./Text"
 import { useTheme } from "../theme/ThemeContext"
+import { numbersAliasTokens } from "../theme/tokens/alias/numbers"
 
 interface SaveButtonProps {
   onPress: () => void
@@ -20,6 +21,7 @@ export function SaveButton({ onPress, text = "Save" }: SaveButtonProps) {
         height: 48,
         alignItems: "center",
         justifyContent: "center",
+        borderRadius: numbersAliasTokens.borderRadius.pill,
       }]}
     >
       <View style={styles.buttonContent}>

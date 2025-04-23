@@ -15,7 +15,7 @@ export function SupplierInfo({ supplier, productTitle, onPress }: SupplierInfoPr
   const { colors } = useTheme()
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.layer.solid.light }]}>
+    <View style={[styles.container, { backgroundColor: colors.layer.solid.medium }]}>
       <View style={styles.contentContainer}>
         <View style={styles.labelContainer}>
           <Text style={[styles.label, { color: colors.text.secondary }]}>Provided by supplier</Text>
