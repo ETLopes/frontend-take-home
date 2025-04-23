@@ -133,9 +133,9 @@ export default function EstimateScreenDesktop() {
 									<Pressable
 										onPress={(e) => {
 											e.stopPropagation();
-											selectSection(section, 'add');
+											selectItem({ id: section.id, title: "", price: 0, quantity: 1, uom: "EA" }, 'add');
 										}}
-										hitSlop={8}
+										hitSlop={16}
 										style={[styles.addButton, { backgroundColor: colors.button.background.secondary.idle }]}
 									>
 										<PlusIcon
