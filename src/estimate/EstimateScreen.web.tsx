@@ -26,14 +26,26 @@ export default function EstimateScreenDesktop() {
 		selectSection,
 		handleSaveItem,
 		handleSaveSection,
+		handleAddItem,
 		clearSelection,
 	} = useEstimateContext()
 	const { colors } = useTheme()
-	const [addMode, setAddMode] = useState<"item" | "section">("item")
+
+	const handleSectionPress = (section: EstimateSection, method: FormModeMethod = "edit") => {
+		if (method === "add") {
+			selectItem({ id: section.id, title: "", price: 0, quantity: 1, uom: "EA" }, method)
+		} else {
+			selectSection(section, method)
+		}
+	}
+
+	const handleItemPress = (item: EstimateRow) => {
+		selectItem(item, 'edit')
+	}
 
 	const renderRightPanel = () => {
 		if (editMode) {
-			return (
+			return editMode.method === "edit" ? (
 				<EditForm
 					key={editMode.data.id}
 					mode={editMode.type}
@@ -45,55 +57,24 @@ export default function EstimateScreenDesktop() {
 					}
 					onClose={clearSelection}
 				/>
+			) : (
+				<AddForm
+					mode={editMode.type}
+					onSave={
+						editMode.type === "item"
+							? (updates: Partial<EstimateRow>) => {
+								handleAddItem(editMode.data.id, updates as EstimateRow)
+							}
+							: (updates: Partial<EstimateSection>) => {
+								handleSaveSection({ ...updates, id: editMode.data.id } as EstimateSection)
+							}
+					}
+					onClose={clearSelection}
+				/>
 			)
 		}
 
-		return (
-			<View style={styles.rightPanel}>
-				<View style={[styles.addModeToggle, { backgroundColor: colors.layer.solid.medium }]}>
-					<Pressable
-						style={[
-							styles.toggleButton,
-							addMode === "item" && { backgroundColor: colors.button.background.primary.idle }
-						]}
-						onPress={() => setAddMode("item")}
-					>
-						<Text style={[styles.toggleText, { color: addMode === "item" ? colors.text.inverse : colors.text.primary }]}>
-							Add Item
-						</Text>
-					</Pressable>
-					<Pressable
-						style={[
-							styles.toggleButton,
-							addMode === "section" && { backgroundColor: colors.button.background.primary.idle }
-						]}
-						onPress={() => setAddMode("section")}
-					>
-						<Text style={[styles.toggleText, { color: addMode === "section" ? colors.text.inverse : colors.text.primary }]}>
-							Add Group
-						</Text>
-					</Pressable>
-				</View>
-				<AddForm
-					mode={addMode}
-					onSave={(updates) => {
-						if (addMode === "item") {
-							handleSaveItem({
-								...updates as Partial<EstimateRow>,
-								id: `item-${Date.now()}`,
-							} as EstimateRow)
-						} else {
-							handleSaveSection({
-								...updates as Partial<EstimateSection>,
-								id: `section-${Date.now()}`,
-								rows: []
-							} as EstimateSection)
-						}
-					}}
-					onClose={() => { }}
-				/>
-			</View>
-		)
+		return null
 	}
 
 	return (
@@ -126,14 +107,14 @@ export default function EstimateScreenDesktop() {
 									styles.selectedSection,
 									{ backgroundColor: colors.layer.solid.medium, borderBottomColor: colors.outline.medium }
 								]}
-								onPress={() => selectSection(section, 'edit')}
+								onPress={() => handleSectionPress(section, 'edit')}
 							>
 								<View style={styles.sectionHeaderLeft}>
 									<Text style={{ color: colors.text.primary }}>{section.title}</Text>
 									<Pressable
 										onPress={(e) => {
 											e.stopPropagation();
-											selectItem({ id: section.id, title: "", price: 0, quantity: 1, uom: "EA" }, 'add');
+											handleSectionPress(section, 'add');
 										}}
 										hitSlop={16}
 										style={[styles.addButton, { backgroundColor: colors.button.background.secondary.idle }]}
@@ -161,7 +142,7 @@ export default function EstimateScreenDesktop() {
 										styles.selectedRow,
 										{ backgroundColor: colors.layer.solid.light, borderBottomColor: colors.outline.medium }
 									]}
-									onPress={() => selectItem(row, 'edit')}
+									onPress={() => handleItemPress(row)}
 								>
 									<View style={styles.rowLeftContent}>
 										<Text style={[styles.rowTitle, { color: colors.text.primary }]}>
