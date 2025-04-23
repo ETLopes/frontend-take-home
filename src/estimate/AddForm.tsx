@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, StyleSheet, TouchableOpacity, Pressable } from "react-native"
+import { View, StyleSheet, TouchableOpacity, Pressable, Platform } from "react-native"
 import { Text } from "../common/components/Text"
 import { CloseIcon } from "../common/components/icons/Close"
 import { UnitOfMeasurePicker } from "./UnitOfMeasurePicker"
@@ -23,7 +23,6 @@ interface AddFormProps {
 
 export function AddForm({ mode, onSave, onClose }: AddFormProps) {
 	const { colors } = useTheme()
-	const router = useRouter()
 	const { selectedUnit, setSelectedUnit } = useEstimateContext()
 	const [name, setName] = useState("")
 	const [price, setPrice] = useState("$  ")
@@ -59,6 +58,12 @@ export function AddForm({ mode, onSave, onClose }: AddFormProps) {
 		}
 	}
 
+	const calculateTotal = () => {
+		const priceValue = parseFloat(price.replace('$', '')) || 0;
+		const quantityValue = parseFloat(quantity) || 0;
+		return (priceValue * quantityValue).toFixed(2);
+	}
+
 	if (showUnitPicker) {
 		return (
 			<View style={[styles.container, { backgroundColor: colors.layer.solid.light }]}>
@@ -74,20 +79,22 @@ export function AddForm({ mode, onSave, onClose }: AddFormProps) {
 
 	return (
 		<View style={[styles.container, { backgroundColor: colors.layer.solid.light }]}>
-			<View style={styles.header}>
-				<TouchableOpacity style={[styles.closeButton, { backgroundColor: colors.button.background.secondary.idle }]} onPress={onClose}>
-					<CloseIcon color={colors.icon.primary} />
-				</TouchableOpacity>
-				<View style={styles.titleContainer}>
-					<Text style={[styles.title, { color: colors.text.primary }]}>Add {mode === "item" ? "Item" : "Group"}</Text>
+			{Platform.OS !== "web" && (
+				<View style={styles.header}>
+					<TouchableOpacity style={[styles.closeButton, { backgroundColor: colors.button.background.secondary.idle }]} onPress={onClose}>
+						<CloseIcon color={colors.icon.primary} />
+					</TouchableOpacity>
+					<View style={styles.titleContainer}>
+						<Text style={[styles.title, { color: colors.text.primary }]}>Add {mode === "item" ? "Item" : "Group"}</Text>
+					</View>
 				</View>
-			</View>
+			)}
 
 			<FloatingLabelInput
-				label="Name"
+				label="Item title"
 				value={name}
 				onChangeText={setName}
-				placeholder="Item title"
+				placeholder={mode === 'item' ? "Item title" : "Group Title"}
 			/>
 
 			{mode === "item" && (
@@ -140,6 +147,15 @@ export function AddForm({ mode, onSave, onClose }: AddFormProps) {
 						onDecrement={() => setQuantity(((parseFloat(quantity) || 0) - 1).toString())}
 						placeholder="Enter quantity"
 					/>
+
+					{mode === "item" && Platform.OS === "web" && (
+						<View style={[styles.totalContainer, { borderTopColor: colors.outline.medium }]}>
+							<Text style={[styles.totalLabel, { color: colors.text.primary }]}>Total</Text>
+							<Text style={[styles.totalValue, { color: colors.text.primary }]}>
+								${calculateTotal()}
+							</Text>
+						</View>
+					)}
 				</>
 			)}
 
@@ -211,5 +227,19 @@ const styles = StyleSheet.create({
 	},
 	formActions: {
 		marginTop: 32,
+	},
+	totalContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		paddingVertical: 16,
+		marginTop: 16,
+		borderTopWidth: 1,
+	},
+	totalLabel: {
+		...customFonts.bold.text.md,
+	},
+	totalValue: {
+		...customFonts.bold.text.md,
 	},
 })

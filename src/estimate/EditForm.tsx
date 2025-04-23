@@ -1,5 +1,5 @@
 import React from "react"
-import { View, StyleSheet, Linking, Pressable } from "react-native"
+import { View, StyleSheet, Linking, Pressable, Platform } from "react-native"
 import { Text } from "../common/components/Text"
 import { EstimateRow, EstimateSection, UnitOfMeasure, UOM_LABELS } from "@/data"
 import { useState } from "react"
@@ -13,6 +13,7 @@ import { NumberStepperInput } from "../common/components/NumberStepperInput"
 import { SupplierInfo } from "../common/components/SupplierInfo"
 import { DeleteIcon } from "../common/components/icons/Delete"
 import { useEstimateContext } from "./context"
+import { customFonts } from "../common/theme/fonts"
 
 type EditFormProps = {
 	mode: "item" | "section"
@@ -63,6 +64,12 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 		onClose()
 	}
 
+	const calculateTotal = () => {
+		const priceValue = parseFloat(price.replace('$', '')) || 0;
+		const quantityValue = parseFloat(quantity) || 0;
+		return (priceValue * quantityValue).toFixed(2);
+	}
+
 	if (showUomPicker) {
 		return (
 			<View style={[styles.container, { backgroundColor: colors.layer.solid.light }]}>
@@ -79,16 +86,18 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 
 	return (
 		<View style={[styles.container, { backgroundColor: colors.layer.solid.light }]}>
-			<View style={styles.headerContainer}>
-				<CloseIcon color={colors.icon.primary} onPress={onClose} />
-				<Text style={[styles.header, { color: colors.text.primary }]}>
-					Edit {mode === "item" ? "Item" : "Group"}
-				</Text>
-				<DeleteIcon
-					color={colors.icon.primary}
-					onPress={handleDelete}
-				/>
-			</View>
+			{Platform.OS !== "web" && (
+				<View style={styles.headerContainer}>
+					<CloseIcon color={colors.icon.primary} onPress={onClose} />
+					<Text style={[styles.header, { color: colors.text.primary }]}>
+						Edit {mode === "item" ? "Item" : "Group"}
+					</Text>
+					<DeleteIcon
+						color={colors.icon.primary}
+						onPress={handleDelete}
+					/>
+				</View>
+			)}
 
 			<FloatingLabelInput
 				label="Title"
@@ -156,6 +165,15 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 						placeholder="0"
 					/>
 
+					{mode === "item" && Platform.OS === "web" && (
+						<View style={[styles.totalContainer, { borderTopColor: colors.outline.medium }]}>
+							<Text style={[styles.totalLabel, { color: colors.text.primary }]}>Total</Text>
+							<Text style={[styles.totalValue, { color: colors.text.primary }]}>
+								${calculateTotal()}
+							</Text>
+						</View>
+					)}
+
 					{isEstimateRow(data) && data.supplier && (
 						<SupplierInfo
 							supplier={data.supplier}
@@ -218,5 +236,19 @@ const styles = StyleSheet.create({
 	},
 	formActions: {
 		marginTop: 32,
+	},
+	totalContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		paddingVertical: 16,
+		marginTop: 16,
+		borderTopWidth: 1,
+	},
+	totalLabel: {
+		...customFonts.bold.text.md,
+	},
+	totalValue: {
+		...customFonts.bold.text.md,
 	},
 })

@@ -33,7 +33,6 @@ export default function EstimateScreen() {
 		handleAddItem,
 		handleSaveSection,
 		clearSelection,
-		deleteSection,
 		deleteItem,
 	} = useEstimateContext()
 
@@ -59,17 +58,6 @@ export default function EstimateScreen() {
 	const handleCloseBottomSheet = () => {
 		bottomSheetRef.current?.close()
 		clearSelection()
-	}
-
-	const handleDelete = () => {
-		if (!editMode) return
-
-		if (editMode.type === "section") {
-			deleteSection(editMode.data.id)
-		} else {
-			deleteItem(editMode.data.id)
-		}
-		handleCloseBottomSheet()
 	}
 
 	return (
