@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable } from "react-native"
+import { View, StyleSheet, Pressable, ScrollView } from "react-native"
 import { Text } from "../common/components/Text"
 import type { EstimateRow, EstimateSection } from "@/data"
 import {
@@ -136,80 +136,84 @@ export default function EstimateScreenDesktop() {
 			<View style={styles.content}>
 				{/* Left side - Table */}
 				<View style={styles.tableContainer}>
-					{estimate.sections.map((section) => (
-						<View key={section.id} style={[styles.section, { backgroundColor: colors.layer.solid.medium }]}>
-							<Pressable
-								style={[
-									styles.sectionHeader,
-									editMode?.type === "section" &&
-									editMode.data.id === section.id &&
-									styles.selectedSection,
-									{ backgroundColor: colors.layer.solid.medium, borderBottomColor: colors.outline.medium }
-								]}
-								onPress={() => handleSectionPress(section, 'edit')}
-							>
-								<View style={styles.sectionHeaderLeft}>
-									<Text style={{ color: colors.text.primary }}>{section.title}</Text>
+					<ScrollView style={styles.scrollView}>
+						<View style={styles.tableContent}>
+							{estimate.sections.map((section) => (
+								<View key={section.id} style={[styles.section, { backgroundColor: colors.layer.solid.medium }]}>
 									<Pressable
-										onPress={(e) => {
-											e.stopPropagation();
-											handleSectionPress(section, 'add');
-										}}
-										hitSlop={16}
-										style={[styles.addButton, { backgroundColor: colors.button.background.secondary.idle }]}
+										style={[
+											styles.sectionHeader,
+											editMode?.type === "section" &&
+											editMode.data.id === section.id &&
+											styles.selectedSection,
+											{ backgroundColor: colors.layer.solid.medium, borderBottomColor: colors.outline.medium }
+										]}
+										onPress={() => handleSectionPress(section, 'edit')}
 									>
-										<PlusIcon
-											width="24"
-											height="24"
-											color={colors.icon.primary}
-											backgroundColor={colors.button.background.secondary.idle}
-										/>
-									</Pressable>
-								</View>
-								<Text style={{ color: colors.text.primary }}>
-									${calculateSectionTotal(section).toFixed(2)}
-								</Text>
-							</Pressable>
-							{/* Table rows */}
-							{section.rows.map((row) => (
-								<Pressable
-									key={row.id}
-									style={[
-										styles.tableRow,
-										editMode?.type === "item" &&
-										editMode.data.id === row.id &&
-										styles.selectedRow,
-										{ backgroundColor: colors.layer.solid.light, borderBottomColor: colors.outline.medium }
-									]}
-									onPress={() => handleItemPress(row)}
-								>
-									<View style={styles.rowLeftContent}>
-										<Text style={[styles.rowTitle, { color: colors.text.primary }]}>
-											{row.title}
-										</Text>
-										<View style={styles.rowDetails}>
-											<Text
-												style={[styles.rowPriceDetails, { color: colors.text.secondary }]}
+										<View style={styles.sectionHeaderLeft}>
+											<Text style={{ color: colors.text.primary }}>{section.title}</Text>
+											<Pressable
+												onPress={(e) => {
+													e.stopPropagation();
+													handleSectionPress(section, 'add');
+												}}
+												hitSlop={16}
+												style={[styles.addButton, { backgroundColor: colors.button.background.secondary.idle }]}
 											>
-												${row.price.toFixed(2)} ×{" "}
-												{row.quantity} {row.uom}
-											</Text>
+												<PlusIcon
+													width="24"
+													height="24"
+													color={colors.icon.primary}
+													backgroundColor={colors.button.background.secondary.idle}
+												/>
+											</Pressable>
 										</View>
-									</View>
-									<Text style={{ color: colors.text.primary }}>
-										${(row.price * row.quantity).toFixed(2)}
-									</Text>
-								</Pressable>
+										<Text style={{ color: colors.text.primary }}>
+											${calculateSectionTotal(section).toFixed(2)}
+										</Text>
+									</Pressable>
+									{/* Table rows */}
+									{section.rows.map((row) => (
+										<Pressable
+											key={row.id}
+											style={[
+												styles.tableRow,
+												editMode?.type === "item" &&
+												editMode.data.id === row.id &&
+												styles.selectedRow,
+												{ backgroundColor: colors.layer.solid.light, borderBottomColor: colors.outline.medium }
+											]}
+											onPress={() => handleItemPress(row)}
+										>
+											<View style={styles.rowLeftContent}>
+												<Text style={[styles.rowTitle, { color: colors.text.primary }]}>
+													{row.title}
+												</Text>
+												<View style={styles.rowDetails}>
+													<Text
+														style={[styles.rowPriceDetails, { color: colors.text.secondary }]}
+													>
+														${row.price.toFixed(2)} ×{" "}
+														{row.quantity} {row.uom}
+													</Text>
+												</View>
+											</View>
+											<Text style={{ color: colors.text.primary }}>
+												${(row.price * row.quantity).toFixed(2)}
+											</Text>
+										</Pressable>
+									))}
+								</View>
 							))}
-						</View>
-					))}
 
-					<View style={[styles.estimateTotal, { backgroundColor: colors.layer.solid.medium }]}>
-						<Text style={{ color: colors.text.primary }}>Total:</Text>
-						<Text style={{ color: colors.text.primary }}>
-							${calculateEstimateTotal(estimate).toFixed(2)}
-						</Text>
-					</View>
+							<View style={[styles.estimateTotal, { backgroundColor: colors.layer.solid.medium }]}>
+								<Text style={{ color: colors.text.primary }}>Total:</Text>
+								<Text style={{ color: colors.text.primary }}>
+									${calculateEstimateTotal(estimate).toFixed(2)}
+								</Text>
+							</View>
+						</View>
+					</ScrollView>
 				</View>
 
 				{/* Right side - Form */}
@@ -249,6 +253,11 @@ const styles = StyleSheet.create({
 	},
 	tableContainer: {
 		flex: 2,
+	},
+	scrollView: {
+		flex: 1,
+	},
+	tableContent: {
 		padding: 16,
 	},
 	formContainer: {
