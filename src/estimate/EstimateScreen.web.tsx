@@ -13,6 +13,9 @@ import { ThemeToggle } from "../common/components/ThemeToggle"
 import { useTheme } from "../common/theme/ThemeContext"
 import { PlusIcon } from "../common/components/icons/Plus"
 import { FormModeMethod } from "./context"
+import { AddForm } from "./AddForm"
+import { useState } from "react"
+import { numbersAliasTokens } from "../common/theme/tokens/alias/numbers"
 
 export default function EstimateScreenDesktop() {
 	const {
@@ -26,28 +29,70 @@ export default function EstimateScreenDesktop() {
 		clearSelection,
 	} = useEstimateContext()
 	const { colors } = useTheme()
+	const [addMode, setAddMode] = useState<"item" | "section">("item")
 
-	const renderEditForm = () => {
-		if (!editMode) {
+	const renderRightPanel = () => {
+		if (editMode) {
 			return (
-				<View style={styles.noSelection}>
-					<Text>Select an item or section to edit</Text>
-				</View>
+				<EditForm
+					key={editMode.data.id}
+					mode={editMode.type}
+					data={editMode.data}
+					onSave={
+						editMode.type === "item"
+							? handleSaveItem
+							: handleSaveSection
+					}
+					onClose={clearSelection}
+				/>
 			)
 		}
 
 		return (
-			<EditForm
-				key={editMode.data.id}
-				mode={editMode.type}
-				data={editMode.data}
-				onSave={
-					editMode.type === "item"
-						? handleSaveItem
-						: handleSaveSection
-				}
-				onClose={clearSelection}
-			/>
+			<View style={styles.rightPanel}>
+				<View style={[styles.addModeToggle, { backgroundColor: colors.layer.solid.medium }]}>
+					<Pressable
+						style={[
+							styles.toggleButton,
+							addMode === "item" && { backgroundColor: colors.button.background.primary.idle }
+						]}
+						onPress={() => setAddMode("item")}
+					>
+						<Text style={[styles.toggleText, { color: addMode === "item" ? colors.text.inverse : colors.text.primary }]}>
+							Add Item
+						</Text>
+					</Pressable>
+					<Pressable
+						style={[
+							styles.toggleButton,
+							addMode === "section" && { backgroundColor: colors.button.background.primary.idle }
+						]}
+						onPress={() => setAddMode("section")}
+					>
+						<Text style={[styles.toggleText, { color: addMode === "section" ? colors.text.inverse : colors.text.primary }]}>
+							Add Group
+						</Text>
+					</Pressable>
+				</View>
+				<AddForm
+					mode={addMode}
+					onSave={(updates) => {
+						if (addMode === "item") {
+							handleSaveItem({
+								...updates as Partial<EstimateRow>,
+								id: `item-${Date.now()}`,
+							} as EstimateRow)
+						} else {
+							handleSaveSection({
+								...updates as Partial<EstimateSection>,
+								id: `section-${Date.now()}`,
+								rows: []
+							} as EstimateSection)
+						}
+					}}
+					onClose={() => { }}
+				/>
+			</View>
 		)
 	}
 
@@ -147,8 +192,10 @@ export default function EstimateScreenDesktop() {
 					</View>
 				</View>
 
-				{/* Right side - Edit form */}
-				<View style={[styles.formContainer, { backgroundColor: colors.layer.solid.light }]}>{renderEditForm()}</View>
+				{/* Right side - Form */}
+				<View style={[styles.formContainer, { backgroundColor: colors.layer.solid.light }]}>
+					{renderRightPanel()}
+				</View>
 			</View>
 		</View>
 	)
@@ -257,5 +304,24 @@ const styles = StyleSheet.create({
 	addButton: {
 		borderRadius: "100%",
 		padding: 4,
+	},
+	rightPanel: {
+		flex: 1,
+	},
+	addModeToggle: {
+		flexDirection: "row",
+		borderRadius: numbersAliasTokens.borderRadius.sm,
+		padding: 4,
+		marginBottom: 16,
+	},
+	toggleButton: {
+		flex: 1,
+		padding: 8,
+		borderRadius: numbersAliasTokens.borderRadius.sm,
+		alignItems: "center",
+	},
+	toggleText: {
+		fontSize: 14,
+		fontWeight: "500",
 	},
 })
