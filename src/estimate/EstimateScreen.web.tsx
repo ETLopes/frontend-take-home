@@ -8,6 +8,9 @@ import {
 import { EditForm } from "./EditForm"
 import { useEstimateContext } from "./context"
 import { TextField } from "../common/components/TextField"
+import { StatusBadge } from "../common/components/StatusBadge"
+import { ThemeToggle } from "../common/components/ThemeToggle"
+import { useTheme } from "../common/theme/ThemeContext"
 
 export default function EstimateScreenDesktop() {
 	const {
@@ -20,6 +23,7 @@ export default function EstimateScreenDesktop() {
 		handleSaveSection,
 		clearSelection,
 	} = useEstimateContext()
+	const { colors } = useTheme()
 
 	const renderEditForm = () => {
 		if (!editMode) {
@@ -46,15 +50,19 @@ export default function EstimateScreenDesktop() {
 	}
 
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, { backgroundColor: colors.layer.solid.light }]}>
 			{/* Header */}
-			<View style={styles.header}>
-				<TextField
-					style={styles.titleInput}
-					value={estimate.title}
-					onChangeText={updateTitle}
-					placeholder="Enter estimate title"
-				/>
+			<View style={[styles.header, { backgroundColor: colors.layer.solid.medium, borderBottomColor: colors.outline.medium }]}>
+				<View style={styles.headerLeft}>
+					<StatusBadge status="Draft" />
+					<TextField
+						style={[styles.titleInput, { color: colors.text.primary }]}
+						value={estimate.title}
+						onChangeText={updateTitle}
+						placeholder="Enter estimate title"
+					/>
+				</View>
+				<ThemeToggle />
 			</View>
 
 			{/* Main content */}
@@ -62,18 +70,19 @@ export default function EstimateScreenDesktop() {
 				{/* Left side - Table */}
 				<View style={styles.tableContainer}>
 					{estimate.sections.map((section) => (
-						<View key={section.id} style={styles.section}>
+						<View key={section.id} style={[styles.section, { backgroundColor: colors.layer.solid.medium }]}>
 							<Pressable
 								style={[
 									styles.sectionHeader,
 									editMode?.type === "section" &&
 									editMode.data.id === section.id &&
 									styles.selectedSection,
+									{ backgroundColor: colors.layer.solid.medium, borderBottomColor: colors.outline.medium }
 								]}
 								onPress={() => selectSection(section, 'edit')}
 							>
-								<Text>{section.title}</Text>
-								<Text>
+								<Text style={{ color: colors.text.primary }}>{section.title}</Text>
+								<Text style={{ color: colors.text.primary }}>
 									${calculateSectionTotal(section).toFixed(2)}
 								</Text>
 							</Pressable>
@@ -86,23 +95,24 @@ export default function EstimateScreenDesktop() {
 										editMode?.type === "item" &&
 										editMode.data.id === row.id &&
 										styles.selectedRow,
+										{ backgroundColor: colors.layer.solid.light, borderBottomColor: colors.outline.medium }
 									]}
 									onPress={() => selectItem(row, 'edit')}
 								>
 									<View style={styles.rowLeftContent}>
-										<Text style={styles.rowTitle}>
+										<Text style={[styles.rowTitle, { color: colors.text.primary }]}>
 											{row.title}
 										</Text>
 										<View style={styles.rowDetails}>
 											<Text
-												style={styles.rowPriceDetails}
+												style={[styles.rowPriceDetails, { color: colors.text.secondary }]}
 											>
 												${row.price.toFixed(2)} ×{" "}
 												{row.quantity} {row.uom}
 											</Text>
 										</View>
 									</View>
-									<Text>
+									<Text style={{ color: colors.text.primary }}>
 										${(row.price * row.quantity).toFixed(2)}
 									</Text>
 								</Pressable>
@@ -110,16 +120,16 @@ export default function EstimateScreenDesktop() {
 						</View>
 					))}
 
-					<View style={styles.estimateTotal}>
-						<Text>Total:</Text>
-						<Text>
+					<View style={[styles.estimateTotal, { backgroundColor: colors.layer.solid.medium }]}>
+						<Text style={{ color: colors.text.primary }}>Total:</Text>
+						<Text style={{ color: colors.text.primary }}>
 							${calculateEstimateTotal(estimate).toFixed(2)}
 						</Text>
 					</View>
 				</View>
 
 				{/* Right side - Edit form */}
-				<View style={styles.formContainer}>{renderEditForm()}</View>
+				<View style={[styles.formContainer, { backgroundColor: colors.layer.solid.light }]}>{renderEditForm()}</View>
 			</View>
 		</View>
 	)
@@ -128,20 +138,24 @@ export default function EstimateScreenDesktop() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#f5f5f5",
 	},
 	header: {
 		padding: 16,
 		borderBottomWidth: 1,
-		borderBottomColor: "#e0e0e0",
-		backgroundColor: "#ffffff",
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+	},
+	headerLeft: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 16,
 	},
 	titleInput: {
 		fontSize: 24,
 		fontWeight: "bold",
 		padding: 12,
 		borderRadius: 8,
-		backgroundColor: "#f5f5f5",
 	},
 	content: {
 		flex: 1,
@@ -155,11 +169,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 		borderLeftWidth: 1,
 		borderLeftColor: "#e0e0e0",
-		backgroundColor: "#ffffff",
 		padding: 16,
 	},
 	section: {
-		backgroundColor: "#ffffff",
 		borderRadius: 8,
 		marginBottom: 16,
 		overflow: "hidden",
@@ -176,15 +188,12 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		padding: 16,
-		backgroundColor: "#f8f8f8",
 		borderBottomWidth: 1,
-		borderBottomColor: "#e0e0e0",
 	},
 	tableRow: {
 		flexDirection: "row",
 		padding: 12,
 		borderBottomWidth: 1,
-		borderBottomColor: "#f0f0f0",
 		cursor: "pointer",
 	},
 	selectedRow: {
@@ -208,7 +217,6 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		padding: 16,
-		backgroundColor: "#ffffff",
 		borderRadius: 8,
 		marginTop: 8,
 		shadowColor: "#000",
