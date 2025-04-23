@@ -30,6 +30,7 @@ export default function EstimateScreenDesktop() {
 		clearSelection,
 	} = useEstimateContext()
 	const { colors } = useTheme()
+	const [addMode, setAddMode] = useState<"section" | "item">("section")
 
 	const handleSectionPress = (section: EstimateSection, method: FormModeMethod = "edit") => {
 		if (method === "add") {
@@ -74,7 +75,45 @@ export default function EstimateScreenDesktop() {
 			)
 		}
 
-		return null
+		return (
+			<View style={styles.rightPanel}>
+				<View style={[styles.addModeToggle, { backgroundColor: colors.layer.solid.dark }]}>
+					<Pressable
+						style={[
+							styles.toggleButton,
+							addMode === "item" && { backgroundColor: colors.layer.solid.light }
+						]}
+						onPress={() => setAddMode("item")}
+					>
+						<Text style={[styles.toggleText, { color: colors.text.primary }]}>Add Item</Text>
+					</Pressable>
+					<Pressable
+						style={[
+							styles.toggleButton,
+							addMode === "section" && { backgroundColor: colors.layer.solid.light }
+						]}
+						onPress={() => setAddMode("section")}
+					>
+						<Text style={[styles.toggleText, { color: colors.text.primary }]}>Add Group</Text>
+					</Pressable>
+				</View>
+				<AddForm
+					mode={addMode}
+					onSave={(updates) => {
+						if (addMode === "section") {
+							handleSaveSection({
+								...updates as Partial<EstimateSection>,
+								id: `section-${Date.now()}`,
+								rows: []
+							} as EstimateSection)
+						} else {
+							handleAddItem("", updates as EstimateRow)
+						}
+					}}
+					onClose={clearSelection}
+				/>
+			</View>
+		)
 	}
 
 	return (
