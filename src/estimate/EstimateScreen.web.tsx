@@ -11,6 +11,8 @@ import { TextField } from "../common/components/TextField"
 import { StatusBadge } from "../common/components/StatusBadge"
 import { ThemeToggle } from "../common/components/ThemeToggle"
 import { useTheme } from "../common/theme/ThemeContext"
+import { PlusIcon } from "../common/components/icons/Plus"
+import { FormModeMethod } from "./context"
 
 export default function EstimateScreenDesktop() {
 	const {
@@ -81,7 +83,24 @@ export default function EstimateScreenDesktop() {
 								]}
 								onPress={() => selectSection(section, 'edit')}
 							>
-								<Text style={{ color: colors.text.primary }}>{section.title}</Text>
+								<View style={styles.sectionHeaderLeft}>
+									<Text style={{ color: colors.text.primary }}>{section.title}</Text>
+									<Pressable
+										onPress={(e) => {
+											e.stopPropagation();
+											selectSection(section, 'add');
+										}}
+										hitSlop={8}
+										style={[styles.addButton, { backgroundColor: colors.button.background.secondary.idle }]}
+									>
+										<PlusIcon
+											width="24"
+											height="24"
+											color={colors.icon.primary}
+											backgroundColor={colors.button.background.secondary.idle}
+										/>
+									</Pressable>
+								</View>
 								<Text style={{ color: colors.text.primary }}>
 									${calculateSectionTotal(section).toFixed(2)}
 								</Text>
@@ -229,5 +248,14 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+	},
+	sectionHeaderLeft: {
+		flexDirection: "row",
+		alignItems: "center",
+		gap: 8,
+	},
+	addButton: {
+		borderRadius: "100%",
+		padding: 4,
 	},
 })
