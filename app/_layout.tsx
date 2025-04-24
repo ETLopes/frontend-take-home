@@ -1,10 +1,10 @@
 import { Stack } from "expo-router"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { ThemeProvider } from '../src/common/theme/ThemeContext'
-import { useWebFonts } from '../src/common/theme/webFonts'
+import { useFonts } from '../src/common/theme/fonts'
 
 export default function RootLayout() {
-	const fontsLoaded = useWebFonts()
+	const [fontsLoaded] = useFonts()
 
 	if (!fontsLoaded) {
 		return null
