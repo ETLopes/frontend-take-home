@@ -278,9 +278,9 @@ const styles = StyleSheet.create({
 		borderTopWidth: 1,
 	},
 	totalLabel: {
-		...customFonts.bold.text.md,
+		...customFonts.regular.text.md,
 	},
 	totalValue: {
-		...customFonts.bold.text.md,
+		...customFonts.regular.text.md,
 	},
 })
