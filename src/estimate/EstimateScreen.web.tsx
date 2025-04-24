@@ -17,6 +17,7 @@ import { AddForm } from "./AddForm"
 import { useState } from "react"
 import { numbersAliasTokens } from "../common/theme/tokens/alias/numbers"
 import type { ViewStyle, TextStyle } from "react-native"
+import { customFonts } from "../common/theme/fonts"
 
 export default function EstimateScreenDesktop() {
 	const {
@@ -120,21 +121,23 @@ export default function EstimateScreenDesktop() {
 	return (
 		<View style={[styles.container, { backgroundColor: colors.layer.solid.light }]}>
 			{/* Header */}
-			<View style={[styles.header, { backgroundColor: colors.layer.solid.medium, borderBottomColor: colors.outline.medium }]}>
+			<View style={[styles.header, { backgroundColor: colors.layer.solid.light }]}>
 				<View style={styles.headerLeft}>
-					<StatusBadge status="Draft" />
-					<TextField
-						style={[styles.titleInput, { color: colors.text.primary }]}
-						value={estimate.title}
-						onChangeText={updateTitle}
-						placeholder="Enter estimate title"
-					/>
+					<View style={styles.headerTitleContainer}>
+						<StatusBadge status="Draft" />
+						<TextField
+							style={[styles.titleInput, { color: colors.text.primary }]}
+							value={estimate.title}
+							onChangeText={updateTitle}
+							placeholder="Enter estimate title"
+						/>
+					</View>
 				</View>
 				<ThemeToggle />
 			</View>
 
 			{/* Main content */}
-			<View style={styles.content}>
+			<View style={[styles.content, { paddingTop: Platform.OS === "web" ? 24 : 0 }]}>
 				{/* Left side - Table */}
 				<View style={[styles.tableContainer, {
 					backgroundColor: colors.layer.solid.medium,
@@ -156,7 +159,7 @@ export default function EstimateScreenDesktop() {
 										onPress={() => handleSectionPress(section, 'edit')}
 									>
 										<View style={styles.sectionHeaderLeft}>
-											<Text style={{ color: colors.text.primary }}>{section.title}</Text>
+											<Text style={[styles.sectionTitle, { color: colors.text.primary }]}>{section.title}</Text>
 											<Pressable
 												onPress={(e) => {
 													e.stopPropagation();
@@ -173,7 +176,7 @@ export default function EstimateScreenDesktop() {
 												/>
 											</Pressable>
 										</View>
-										<Text style={{ color: colors.text.primary }}>
+										<Text style={[styles.sectionTotal, { color: colors.text.primary }]}>
 											${calculateSectionTotal(section).toFixed(2)}
 										</Text>
 									</Pressable>
@@ -203,7 +206,7 @@ export default function EstimateScreenDesktop() {
 													</Text>
 												</View>
 											</View>
-											<Text style={{ color: colors.text.primary }}>
+											<Text style={[styles.rowTotal, { color: colors.text.primary }]}>
 												${(row.price * row.quantity).toFixed(2)}
 											</Text>
 										</Pressable>
@@ -213,8 +216,8 @@ export default function EstimateScreenDesktop() {
 						</View>
 					</ScrollView>
 					<View style={[styles.estimateTotal, { backgroundColor: colors.layer.solid.medium, borderTopColor: colors.outline.medium }]}>
-						<Text style={{ color: colors.text.primary }}>Total:</Text>
-						<Text style={{ color: colors.text.primary }}>
+						<Text style={[styles.totalLabel, { color: colors.text.primary }]}>Total:</Text>
+						<Text style={[styles.totalValue, { color: colors.text.primary }]}>
 							${calculateEstimateTotal(estimate).toFixed(2)}
 						</Text>
 					</View>
@@ -240,17 +243,18 @@ const styles = StyleSheet.create({
 		flex: 1,
 	} as ViewStyle,
 	header: {
-		padding: 16,
-		borderBottomWidth: 1,
+		paddingHorizontal: Platform.OS === "web" ? 40 : 16,
+		paddingTop: Platform.OS === "web" ? 40 : 16,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
 	} as ViewStyle,
 	headerLeft: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 16,
-	} as ViewStyle,
+		flex: 1,
+	},
+	headerTitleContainer: {
+		gap: 8,
+	},
 	titleInput: {
 		fontSize: 24,
 		fontWeight: "bold",
@@ -260,7 +264,8 @@ const styles = StyleSheet.create({
 	content: {
 		flex: 1,
 		flexDirection: "row",
-		padding: Platform.OS === "web" ? 40 : 0,
+		paddingHorizontal: Platform.OS === "web" ? 40 : 0,
+		paddingBottom: Platform.OS === "web" ? 40 : 0,
 		gap: Platform.OS === "web" ? 28 : 0,
 		alignItems: 'flex-start',
 	} as ViewStyle,
@@ -314,14 +319,14 @@ const styles = StyleSheet.create({
 		marginRight: 16,
 	} as ViewStyle,
 	rowTitle: {
-		fontSize: 16,
+		...customFonts.regular.text.md,
 		marginBottom: 4,
 	} as TextStyle,
 	rowDetails: {
 		opacity: 0.7,
 	} as ViewStyle,
 	rowPriceDetails: {
-		fontSize: 14,
+		...customFonts.regular.text.sm,
 	} as TextStyle,
 	estimateTotal: {
 		flexDirection: "row",
@@ -368,4 +373,19 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		fontWeight: "500",
 	} as TextStyle,
+	sectionTitle: {
+		...customFonts.bold.text.md,
+	},
+	sectionTotal: {
+		...customFonts.bold.text.md,
+	},
+	rowTotal: {
+		...customFonts.regular.text.md,
+	},
+	totalLabel: {
+		...customFonts.bold.text.md,
+	},
+	totalValue: {
+		...customFonts.bold.text.md,
+	},
 })

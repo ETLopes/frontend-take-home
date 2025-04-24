@@ -10,6 +10,7 @@ import {
 import { useFonts as useFontsFromExpo } from "expo-font"
 import type { TextStyle } from "react-native"
 import { numbersBaseTokens } from "./tokens/base/numbers"
+import { Platform } from "react-native"
 
 type FontSize = "xl" | "lg" | "md" | "sm" | "xs" | "xxs"
 
@@ -107,18 +108,30 @@ export const customFonts = {
 				fontSize: numbersBaseTokens.typography.size[5],
 				lineHeight: 24,
 				letterSpacing: 0,
+				fontFamily: Platform.select({
+					web: 'Inter, sans-serif',
+					default: getFontFamilyAndFontWeight("inter", 600).fontFamily,
+				}),
 			},
 			md: {
 				...getFontFamilyAndFontWeight("inter", 600),
 				fontSize: numbersBaseTokens.typography.size[4],
 				lineHeight: 24,
 				letterSpacing: 0,
+				fontFamily: Platform.select({
+					web: 'Inter, sans-serif',
+					default: getFontFamilyAndFontWeight("inter", 600).fontFamily,
+				}),
 			},
 			sm: {
 				...getFontFamilyAndFontWeight("inter", 600),
 				fontSize: numbersBaseTokens.typography.size[3],
 				lineHeight: 24,
 				letterSpacing: 0,
+				fontFamily: Platform.select({
+					web: 'Inter, sans-serif',
+					default: getFontFamilyAndFontWeight("inter", 600).fontFamily,
+				}),
 			},
 			xs: {
 				...getFontFamilyAndFontWeight("inter", 600),
@@ -179,18 +192,30 @@ export const customFonts = {
 				fontSize: numbersBaseTokens.typography.size[5],
 				lineHeight: 24,
 				letterSpacing: -0.38,
+				fontFamily: Platform.select({
+					web: 'Inter, sans-serif',
+					default: getFontFamilyAndFontWeight("inter", 500).fontFamily,
+				}),
 			},
 			md: {
 				...getFontFamilyAndFontWeight("inter", 500),
 				fontSize: numbersBaseTokens.typography.size[4],
 				lineHeight: 24,
 				letterSpacing: 0,
+				fontFamily: Platform.select({
+					web: 'Inter, sans-serif',
+					default: getFontFamilyAndFontWeight("inter", 500).fontFamily,
+				}),
 			},
 			sm: {
 				...getFontFamilyAndFontWeight("inter", 500),
 				fontSize: numbersBaseTokens.typography.size[3],
 				lineHeight: 24,
 				letterSpacing: 0,
+				fontFamily: Platform.select({
+					web: 'Inter, sans-serif',
+					default: getFontFamilyAndFontWeight("inter", 500).fontFamily,
+				}),
 			},
 			xs: {
 				...getFontFamilyAndFontWeight("inter", 500),
