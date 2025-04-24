@@ -49,7 +49,6 @@ export const WebSection = ({ section, editMode, handleSectionPress, handleItemPr
           ${calculateSectionTotal(section).toFixed(2)}
         </Text>
       </Pressable>
-      {/* Table rows */}
       {section.rows.map((row) => (
         <Pressable
           key={row.id}

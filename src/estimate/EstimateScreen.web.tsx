@@ -41,11 +41,8 @@ export default function EstimateScreenDesktop() {
 
 	return (
 		<View style={[styles.container, { backgroundColor: colors.layer.solid.light }]}>
-			{/* Header */}
 			<WebHeader estimate={estimate} updateTitle={updateTitle} />
-			{/* Main content */}
 			<View style={[styles.content, { paddingTop: Platform.OS === "web" ? 24 : 0 }]}>
-				{/* Left side - Table */}
 				<View style={[styles.tableContainer, {
 					backgroundColor: colors.layer.solid.medium,
 					borderWidth: Platform.OS === "web" ? 1 : 0,
@@ -61,7 +58,6 @@ export default function EstimateScreenDesktop() {
 					<SectionTotal estimate={estimate} />
 				</View>
 
-				{/* Right side - Form */}
 				<View style={[styles.formContainer, {
 					backgroundColor: colors.layer.solid.light,
 					borderWidth: Platform.OS === "web" ? 1 : 0,
