@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable, ScrollView, Platform } from "react-native"
+import { View, StyleSheet, ScrollView, Platform } from "react-native"
 import type { EstimateRow, EstimateSection } from "@/data"
 import { useEstimateContext } from "./context"
 import { useTheme } from "../common/theme/ThemeContext"

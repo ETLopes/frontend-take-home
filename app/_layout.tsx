@@ -11,7 +11,7 @@ export default function RootLayout() {
 	}
 
 	return (
-		<ThemeProvider>
+		<ThemeProvider preferSystem>
 			<GestureHandlerRootView style={{ flex: 1 }}>
 				<Stack
 					screenOptions={{
