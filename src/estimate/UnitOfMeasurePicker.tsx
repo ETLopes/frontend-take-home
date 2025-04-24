@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react"
-import { View, StyleSheet, FlatList } from "react-native"
+import { View, StyleSheet, FlatList, Pressable } from "react-native"
 import { Text } from "../common/components/Text"
 import { useTheme } from "../common/theme/ThemeContext"
 import { UnitOfMeasure, UOM_LABELS } from "@/data"
@@ -47,14 +47,14 @@ export function UnitOfMeasurePicker({ onSelect, onClose }: UnitOfMeasurePickerPr
         {category.charAt(0).toUpperCase() + category.slice(1)}
       </Text>
       {units.map(unit => (
-        <View
+        <Pressable
           key={unit}
           style={[styles.unitItem, { borderColor: colors.outline.medium }]}
-          onTouchEnd={() => onSelect(unit as UnitOfMeasure)}
+          onPress={() => onSelect(unit as UnitOfMeasure)}
         >
           <Text style={{ color: colors.text.primary }}>{UOM_LABELS[unit as UnitOfMeasure]}</Text>
           <Text style={{ color: colors.text.secondary }}>{unit}</Text>
-        </View>
+        </Pressable>
       ))}
     </View>
   )
