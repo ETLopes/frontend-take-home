@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable, ScrollView } from "react-native"
+import { View, StyleSheet, Pressable, ScrollView, Platform } from "react-native"
 import { Text } from "../common/components/Text"
 import type { EstimateRow, EstimateSection } from "@/data"
 import {
@@ -16,7 +16,7 @@ import { FormModeMethod } from "./context"
 import { AddForm } from "./AddForm"
 import { useState } from "react"
 import { numbersAliasTokens } from "../common/theme/tokens/alias/numbers"
-import { Platform } from "react-native"
+import type { ViewStyle, TextStyle } from "react-native"
 
 export default function EstimateScreenDesktop() {
 	const {
@@ -238,89 +238,91 @@ export default function EstimateScreenDesktop() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-	},
+	} as ViewStyle,
 	header: {
 		padding: 16,
 		borderBottomWidth: 1,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-	},
+	} as ViewStyle,
 	headerLeft: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		gap: 16,
-	},
+	} as ViewStyle,
 	titleInput: {
 		fontSize: 24,
 		fontWeight: "bold",
 		padding: 12,
 		borderRadius: 8,
-	},
+	} as TextStyle,
 	content: {
 		flex: 1,
 		flexDirection: "row",
 		padding: Platform.OS === "web" ? 40 : 0,
 		gap: Platform.OS === "web" ? 28 : 0,
 		alignItems: 'flex-start',
-	},
+	} as ViewStyle,
 	tableContainer: {
 		flex: 2,
 		position: 'relative',
 		borderRadius: 8,
 		overflow: 'hidden',
-	},
+		maxHeight: Platform.OS === "web" ? '100%' : undefined,
+	} as ViewStyle,
 	scrollView: {
 		flex: 1,
-	},
+		height: '100%',
+	} as ViewStyle,
 	tableContent: {
 		padding: Platform.OS === "web" ? 0 : 16,
 		paddingBottom: Platform.OS === "web" ? 80 : 16,
-	},
+	} as ViewStyle,
 	formContainer: {
 		position: 'relative',
 		borderRadius: 8,
 		overflow: 'hidden',
 		width: Platform.OS === "web" ? 400 : '100%',
-	},
+	} as ViewStyle,
 	section: {
 		borderRadius: 0,
 		marginBottom: Platform.OS === "web" ? 0 : 16,
 		overflow: "hidden",
-	},
+	} as ViewStyle,
 	selectedSection: {
 		backgroundColor: "#e6f0ff",
-	},
+	} as ViewStyle,
 	sectionHeader: {
 		flexDirection: "row",
 		justifyContent: "space-between",
 		padding: 16,
 		borderBottomWidth: 1,
-	},
+	} as ViewStyle,
 	tableRow: {
 		flexDirection: "row",
 		padding: 16,
 		borderBottomWidth: 1,
-		cursor: "pointer",
+		cursor: "pointer" as const,
 		marginBottom: Platform.OS === "web" ? 0 : 8,
-	},
+	} as ViewStyle,
 	selectedRow: {
 		backgroundColor: "#f0f7ff",
-	},
+	} as ViewStyle,
 	rowLeftContent: {
 		flex: 1,
 		marginRight: 16,
-	},
+	} as ViewStyle,
 	rowTitle: {
 		fontSize: 16,
 		marginBottom: 4,
-	},
+	} as TextStyle,
 	rowDetails: {
 		opacity: 0.7,
-	},
+	} as ViewStyle,
 	rowPriceDetails: {
 		fontSize: 14,
-	},
+	} as TextStyle,
 	estimateTotal: {
 		flexDirection: "row",
 		justifyContent: "space-between",
@@ -330,24 +332,24 @@ const styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		borderTopWidth: 1,
-	},
+	} as ViewStyle,
 	noSelection: {
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-	},
+	} as ViewStyle,
 	sectionHeaderLeft: {
 		flexDirection: "row",
 		alignItems: "center",
 		gap: 8,
-	},
+	} as ViewStyle,
 	addButton: {
 		borderRadius: "100%",
 		padding: 4,
-	},
+	} as ViewStyle,
 	rightPanel: {
 		flex: 1,
-	},
+	} as ViewStyle,
 	addModeToggle: {
 		flexDirection: "row",
 		borderRadius: numbersAliasTokens.borderRadius.sm,
@@ -355,15 +357,15 @@ const styles = StyleSheet.create({
 		marginBottom: 16,
 		width: Platform.OS === "web" ? 320 : '100%',
 		alignSelf: 'center',
-	},
+	} as ViewStyle,
 	toggleButton: {
 		flex: 1,
 		padding: 8,
 		borderRadius: numbersAliasTokens.borderRadius.sm,
 		alignItems: "center",
-	},
+	} as ViewStyle,
 	toggleText: {
 		fontSize: 14,
 		fontWeight: "500",
-	},
+	} as TextStyle,
 })
