@@ -18,6 +18,7 @@ import { useState } from "react"
 import { numbersAliasTokens } from "../common/theme/tokens/alias/numbers"
 import type { ViewStyle, TextStyle } from "react-native"
 import { customFonts } from "../common/theme/fonts"
+import { formatCurrency } from "../common/lib/format"
 
 export default function EstimateScreenDesktop() {
 	const {
@@ -177,7 +178,7 @@ export default function EstimateScreenDesktop() {
 											</Pressable>
 										</View>
 										<Text style={[styles.sectionTotal, { color: colors.text.primary }]}>
-											${calculateSectionTotal(section).toFixed(2)}
+											${formatCurrency(calculateSectionTotal(section))}
 										</Text>
 									</Pressable>
 									{/* Table rows */}
@@ -201,13 +202,13 @@ export default function EstimateScreenDesktop() {
 													<Text
 														style={[styles.rowPriceDetails, { color: colors.text.secondary }]}
 													>
-														${row.price.toFixed(2)} ×{" "}
+														${formatCurrency(row.price)} ×{" "}
 														{row.quantity} {row.uom}
 													</Text>
 												</View>
 											</View>
 											<Text style={[styles.rowTotal, { color: colors.text.primary }]}>
-												${(row.price * row.quantity).toFixed(2)}
+												${formatCurrency(row.price * row.quantity)}
 											</Text>
 										</Pressable>
 									))}
@@ -218,7 +219,7 @@ export default function EstimateScreenDesktop() {
 					<View style={[styles.estimateTotal, { backgroundColor: colors.layer.solid.medium, borderTopColor: colors.outline.medium }]}>
 						<Text style={[styles.totalLabel, { color: colors.text.primary }]}>Total:</Text>
 						<Text style={[styles.totalValue, { color: colors.text.primary }]}>
-							${calculateEstimateTotal(estimate).toFixed(2)}
+							${formatCurrency(calculateEstimateTotal(estimate))}
 						</Text>
 					</View>
 				</View>

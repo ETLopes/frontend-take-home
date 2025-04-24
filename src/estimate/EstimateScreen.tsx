@@ -17,6 +17,7 @@ import { useTheme } from "../common/theme/ThemeContext"
 import { TextField } from "../common/components/TextField"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { StatusBadge } from "../common/components/StatusBadge"
+import { formatCurrency } from "../common/lib/format"
 
 
 export default function EstimateScreen() {
@@ -96,7 +97,9 @@ export default function EstimateScreen() {
 					borderTopColor: colors.outline.medium
 				}]}>
 					<Text style={{ color: colors.text.primary }}>Total:</Text>
-					<Text style={{ color: colors.text.primary }}>${calculateEstimateTotal(estimate).toFixed(2)}</Text>
+					<Text style={{ color: colors.text.primary }}>
+						${formatCurrency(calculateEstimateTotal(estimate))}
+					</Text>
 				</View>
 			</ScrollView>
 

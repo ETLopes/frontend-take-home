@@ -4,6 +4,7 @@ import { Text } from "@/src/common/components/Text"
 import { EstimateRow } from "@/data"
 import type { ColorMode } from "@/src/common/theme/tokens/alias/colors"
 import { SwipeableRow } from "@/src/common/components/SwipeableRow"
+import { formatCurrency } from "@/src/common/lib/format"
 
 interface Props {
   row: EstimateRow
@@ -27,13 +28,13 @@ export const SectionRow = ({ row, handleItemPress, handleDelete, colors }: Props
               {row.title}
             </Text>
             <Text style={[styles.rowPriceDetails, { color: colors.text.secondary }]}>
-              ${row.price.toFixed(2)} × {row.quantity}{" "}
+              ${formatCurrency(row.price)} × {row.quantity}{" "}
               {row.uom}
             </Text>
           </View>
           <View style={styles.rowPriceTotalBox}>
             <Text style={[styles.rowPriceTotal, { color: colors.text.primary }]}>
-              ${(row.price * row.quantity).toFixed(2)}
+              ${formatCurrency(row.price * row.quantity)}
             </Text>
           </View>
         </View>

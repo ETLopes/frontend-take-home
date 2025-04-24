@@ -7,6 +7,7 @@ import { SectionRow } from "./SectionRow"
 import { FormModeMethod } from "../context"
 import { PlusIcon } from "@/src/common/components/icons"
 import { useTheme } from "@/src/common/theme/ThemeContext"
+import { formatCurrency } from "@/src/common/lib/format"
 
 interface SectionProps {
   section: EstimateSection
@@ -41,7 +42,7 @@ export const Section = ({ section, handleSectionPress, handleItemPress, handleDe
           </Pressable>
         </View>
         <Text style={[styles.sectionHeaderTotal, { color: colors.text.primary }]}>
-          ${calculateSectionTotal(section).toFixed(2)}
+          ${formatCurrency(calculateSectionTotal(section))}
         </Text>
       </Pressable>
       {section.rows.map((row) => (
