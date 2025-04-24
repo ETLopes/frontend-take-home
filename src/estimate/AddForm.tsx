@@ -219,8 +219,8 @@ const styles = StyleSheet.create({
 	arrowContainer: {
 		position: "absolute",
 		right: 12,
-		top: 0,
-		bottom: 0,
+		top: '50%',
+		transform: [{ translateY: -12 }],
 		justifyContent: "center",
 		alignItems: "center",
 		width: 24,
