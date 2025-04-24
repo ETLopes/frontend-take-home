@@ -14,6 +14,7 @@ import { SupplierInfo } from "../common/components/SupplierInfo"
 import { DeleteIcon } from "../common/components/icons/Delete"
 import { useEstimateContext } from "./context"
 import { customFonts } from "../common/theme/fonts"
+import { numbersAliasTokens } from "../common/theme/tokens/alias/numbers"
 
 type EditFormProps = {
 	mode: "item" | "section"
@@ -184,7 +185,21 @@ export function EditForm({ mode, data, onSave, onClose }: EditFormProps) {
 				</>
 			)}
 			<View style={styles.formActions}>
-				<SaveButton onPress={handleSave} text="Save Changes" />
+				{Platform.OS === "web" ? (
+					<View style={styles.webFormActions}>
+						<Pressable
+							style={styles.deleteButton}
+							onPress={handleDelete}
+						>
+							<Text style={[styles.deleteButtonText, { color: colors.text.danger }]}>Delete</Text>
+						</Pressable>
+						<View style={styles.saveButtonContainer}>
+							<SaveButton onPress={handleSave} text="Save Changes" />
+						</View>
+					</View>
+				) : (
+					<SaveButton onPress={handleSave} text="Save Changes" />
+				)}
 			</View>
 		</View>
 	)
@@ -236,6 +251,23 @@ const styles = StyleSheet.create({
 	},
 	formActions: {
 		marginTop: 32,
+	},
+	webFormActions: {
+		flexDirection: 'row',
+		gap: 16,
+	},
+	deleteButton: {
+		flex: 1,
+		paddingVertical: 12,
+		borderRadius: numbersAliasTokens.borderRadius.sm,
+		alignItems: 'center',
+	},
+	deleteButtonText: {
+		fontSize: 14,
+		fontWeight: '500',
+	},
+	saveButtonContainer: {
+		flex: 1,
 	},
 	totalContainer: {
 		flexDirection: "row",
