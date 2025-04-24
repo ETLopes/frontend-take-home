@@ -26,11 +26,19 @@ interface ThemeProviderProps {
 export function ThemeProvider({ children, preferSystem }: ThemeProviderProps) {
   const systemColorScheme = useColorScheme()
   const [theme, setTheme] = useState<ThemeScheme>(DEFAULT_THEME_SCHEME)
+  const [isSystemTheme, setIsSystemTheme] = useState(!!preferSystem)
 
   const effectiveTheme = useMemo(() => {
-    const systemTheme = systemColorScheme ?? DEFAULT_THEME_SCHEME
-    return preferSystem ? systemTheme : theme
-  }, [systemColorScheme, preferSystem, theme])
+    if (isSystemTheme) {
+      return systemColorScheme ?? DEFAULT_THEME_SCHEME
+    }
+    return theme
+  }, [systemColorScheme, isSystemTheme, theme])
+
+  const handleSetTheme = (newTheme: ThemeScheme) => {
+    setIsSystemTheme(false)
+    setTheme(newTheme)
+  }
 
   const colors: ThemeColors = {
     ...getColors(effectiveTheme),
@@ -41,9 +49,9 @@ export function ThemeProvider({ children, preferSystem }: ThemeProviderProps) {
     <ThemeContext.Provider value={{
       theme: effectiveTheme,
       isDarkMode: effectiveTheme === 'dark',
-      setTheme,
+      setTheme: handleSetTheme,
       colors,
-      preferSystem
+      preferSystem: isSystemTheme
     }}>
       {children}
     </ThemeContext.Provider>

@@ -7,7 +7,7 @@ import { numbersAliasTokens } from "../theme/tokens/alias/numbers"
 import { numbersBaseTokens } from "../theme/tokens/base/numbers"
 
 export const ThemeToggle = () => {
-  const { isDarkMode, setTheme, colors } = useTheme()
+  const { isDarkMode, setTheme, colors, preferSystem } = useTheme()
   const slideAnim = useRef(new Animated.Value(isDarkMode ? 1 : 0)).current
 
   useEffect(() => {
@@ -23,6 +23,15 @@ export const ThemeToggle = () => {
     outputRange: [0, 40],
   })
 
+  const handleThemeChange = (newTheme: 'light' | 'dark') => {
+    if (preferSystem) {
+      // If preferSystem is true, we need to disable it first
+      setTheme(newTheme)
+    } else {
+      setTheme(newTheme)
+    }
+  }
+
   return (
     <View style={[styles.themeContainer, { backgroundColor: colors.layer.solid.dark }]}>
       <Animated.View
@@ -35,13 +44,13 @@ export const ThemeToggle = () => {
         ]}
       />
       <Pressable
-        onPress={() => setTheme('light')}
+        onPress={() => handleThemeChange('light')}
         style={styles.themeToggle}
       >
         <LightIcon color={colors.icon.primary} height={numbersAliasTokens.sizing.icon.md} width={numbersAliasTokens.sizing.icon.md} />
       </Pressable>
       <Pressable
-        onPress={() => setTheme('dark')}
+        onPress={() => handleThemeChange('dark')}
         style={styles.themeToggle}
       >
         <DarkIcon color={colors.icon.primary} width={numbersBaseTokens.globalScale[5]} height={numbersBaseTokens.globalScale[5]} />

@@ -2,6 +2,11 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app) as a starting point for the frontend engineering take-home challenge.
 
+## DEV NOTES
+
+See [DEV_NOTES.md](./DEV_NOTES.md) for development notes and decisions made during implementation.
+
+
 ## Project Structure
 
 ```s
@@ -34,3 +39,4 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 -   [Figma Design](https://www.figma.com/design/Blk49Bk32ACk3yuDC2Vsq5/Take-Home-Assement---Front-End-Jan-2025?node-id=4044-145&t=4yKjBuOChIiCckTl-11) (Password: `H@ndoff#`)
 -   [Expo Documentation](https://docs.expo.dev/)
 -   [React Native Documentation](https://reactnative.dev/)
+
