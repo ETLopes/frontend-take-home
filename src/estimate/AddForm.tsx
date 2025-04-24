@@ -91,7 +91,7 @@ export function AddForm({ mode, onSave, onClose }: AddFormProps) {
 			)}
 
 			<FloatingLabelInput
-				label="Item title"
+				label={mode === 'item' ? "Item title" : "Group Title"}
 				value={name}
 				onChangeText={setName}
 				placeholder={mode === 'item' ? "Item title" : "Group Title"}
